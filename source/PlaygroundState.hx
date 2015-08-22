@@ -31,7 +31,7 @@ class PlaygroundState extends FlxState
         level = new Level();
 
         Reg.getPlayerAnim(player);
-        player.animation.play("playerIdle");
+        player.animation.play("playerJump");
 
         enemies = new FlxTypedGroup<Enemy>();
         enemies.maxSize = 100;

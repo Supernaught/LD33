@@ -31,7 +31,14 @@ class Reg
 
 	public static function getPlayerAnim(Player:FlxSprite){
 		Player.loadGraphic(SPRITESHEET, true, 16,16);
-		Player.animation.add("test", [1], 30);
-		Player.animation.add("playerIdle", [24], 30);
+		Player.animation.add("playerIdle", [40,41,42,43,43], 10);
+		Player.animation.add("playerRun", [45,46,47,48,47,46,45,44], 18);
+		Player.animation.add("playerFall", [49,50,51], 13);
+		Player.animation.add("playerJump", [52,53,54], 13);
+	}
+
+	public static function getSignPostAnim(Player:FlxSprite){
+		Player.loadGraphic(SPRITESHEET, true, 16,16);
+		Player.animation.add("postSwing", [37,38,39,38], 2);
 	}
 }
