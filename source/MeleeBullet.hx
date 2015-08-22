@@ -15,7 +15,7 @@ class MeleeBullet extends Bullet
     {
         super();
 
-        makeGraphic(Reg.T_WIDTH + 10, Reg.T_HEIGHT, FlxColor.WHITE);
+        makeGraphic(Reg.T_WIDTH + 4, Reg.T_HEIGHT, FlxColor.WHITE);
     }
 
     override public function update():Void

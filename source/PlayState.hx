@@ -55,10 +55,10 @@ class PlayState extends FlxState
 		super.update();
 
 		FlxG.collide(bullets, level.level, onCollision);
+		FlxG.overlap(bullets, enemies, bulletHit);
 		FlxG.collide(enemies, level.level, onCollision);
 		FlxG.collide(player, level.level);
 
-		FlxG.overlap(bullets, enemies, bulletHit);
 	}	
 
 	private function forDebug(){
