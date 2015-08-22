@@ -30,7 +30,7 @@ class Reg
 	public static inline var ENEMY_3:Int = 3;
 
 	public static function getPlayerAnim(Player:FlxSprite){
-		Player.loadGraphic(SPRITESHEET, true, 8);
+		Player.loadGraphic(SPRITESHEET, true, 16,16);
 		Player.animation.add("test", [1], 30);
 		Player.animation.add("playerIdle", [24], 30);
 	}

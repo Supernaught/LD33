@@ -14,7 +14,9 @@ class EnemyWalking extends Enemy
         hp = 3;
         makeGraphic(Reg.T_WIDTH, Reg.T_HEIGHT, FlxColor.MAGENTA);
 
-        facing = (X < PlayState.level.level.width/2) ? FlxObject.RIGHT : FlxObject.LEFT;
+        // facing = (X < PlayState.level.level.width/2) ? FlxObject.RIGHT : FlxObject.LEFT;
+
+        facing = FlxObject.RIGHT;
 
         setFacingFlip(FlxObject.LEFT, true, false);
         setFacingFlip(FlxObject.RIGHT, false, false);
@@ -22,7 +24,7 @@ class EnemyWalking extends Enemy
         movespeed = 1000;
         drag.x = movespeed;
 
-        // acceleration.x = (facing == FlxObject.RIGHT ) ? movespeed : -movespeed;
+        acceleration.x = (facing == FlxObject.RIGHT ) ? movespeed : -movespeed;
         acceleration.y = maxSpeedY * Reg.GRAVITY;
         
         maxSpeedX = 50;
