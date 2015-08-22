@@ -32,7 +32,9 @@ class PlayState extends FlxState
 		setupWorld();
 		setupCamera();
 		setupEnemies();
-		setupBg();
+		// setupBg();
+
+		FlxG.camera.bgColor = 0xff23173b;
 
         add(level.level);
 		add(player);
@@ -124,7 +126,7 @@ class PlayState extends FlxState
 
 	private function setupBg():Void
 	{
-		bg = new FlxSprite(0, 0, "assets/images/bg.png");
+		bg = new FlxSprite(0, 0, "assets/images/cave_walls.png");
 		bg.scrollFactor.set(0.1,0.1);
 		add(bg);
 		bg2 = new FlxSprite(0, 0, "assets/images/bg2.png");

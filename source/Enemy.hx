@@ -5,7 +5,7 @@ import flixel.FlxG;
 import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
 
-class Enemy extends FlxSprite
+class Enemy extends Unit
 {
     // Enemy stuff
     var hp:Int = 1;

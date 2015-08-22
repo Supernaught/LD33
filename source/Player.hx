@@ -7,7 +7,7 @@ import flixel.util.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.group.FlxTypedGroup;
 
-class Player extends FlxSprite
+class Player extends Unit
 {
     private static var ATTACK_COOLDOWN:Float = 0.1; // in milliseconds
 
@@ -34,13 +34,18 @@ class Player extends FlxSprite
     private var meleeAttackFrameCounter:Int;
     private var isMeleeAttacking:Bool;
 
+    // Components
+    private var canAttackComponent:CanAttack;
 
     public function new(X:Int, Y:Int, Bullets:FlxTypedGroup<Bullet>)
     {
         super(X,Y);
 
+        // components = new Array<Component>();
+        // components.push(new CanAttack(this));
+
         // Animation sprites stuff
-        makeGraphic(Reg.T_WIDTH, Reg.T_HEIGHT, FlxColor.GREEN);
+        makeGraphic(Reg.T_WIDTH, Reg.T_HEIGHT, 0xffc71045);
 
         var yOffset = 2;
         var xOffset = 2;
@@ -64,6 +69,7 @@ class Player extends FlxSprite
         // Jump stuff
         canJump = true;
 
+        canAttackComponent = new CanAttack(this);
     }
 
     override public function update():Void
@@ -154,6 +160,8 @@ class Player extends FlxSprite
         //     var angle = (facing == FlxObject.LEFT) ? -90 : 90;           
         //     bullets.recycle(RangedBullet).shoot(new FlxPoint(x,y), angle);
         // }
+
+        canAttackComponent.attack();
 
         // Attack melee
         isMeleeAttacking = true;

@@ -22,7 +22,7 @@ class EnemyWalking extends Enemy
         movespeed = 1000;
         drag.x = movespeed;
 
-        acceleration.x = (facing == FlxObject.RIGHT ) ? movespeed : -movespeed;
+        // acceleration.x = (facing == FlxObject.RIGHT ) ? movespeed : -movespeed;
         acceleration.y = maxSpeedY * Reg.GRAVITY;
         
         maxSpeedX = 50;
