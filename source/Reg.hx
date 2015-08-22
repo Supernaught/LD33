@@ -1,6 +1,7 @@
 package;
 
 import flixel.util.FlxSave;
+import flixel.FlxSprite;
 
 class Reg
 {

@@ -3,37 +3,90 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.text.FlxText;
+import flixel.FlxObject;
+import flixel.FlxCamera;
 import flixel.ui.FlxButton;
+import flixel.text.FlxText;
 import flixel.util.FlxMath;
+import flixel.group.FlxTypedGroup;
 
-/**
- * A FlxState which can be used for the actual gameplay.
- */
 class PlayState extends FlxState
 {
-	/**
-	 * Function that is called up when to state is created to set it up. 
-	 */
+
+	public static var cameraTarget:FlxSprite;
+	var player:Player;
+	var bullets:FlxTypedGroup<Bullet>;
+	var level:Level;
+
 	override public function create():Void
 	{
 		super.create();
+
+		setupPlayer();
+		setupLevel();
+		setupWorld();
+		setupCamera();
+
+		add(player);
+        add(bullets);
+        add(level.level);
 	}
 	
-	/**
-	 * Function that is called when this state is destroyed - you might want to 
-	 * consider setting all objects this state uses to null to help garbage collection.
-	 */
 	override public function destroy():Void
 	{
 		super.destroy();
 	}
 
-	/**
-	 * Function that is called once every frame.
-	 */
 	override public function update():Void
 	{
+		forDebug();
+		cameraTarget.setPosition(player.x + (FlxG.mouse.x - player.x)/6, player.y + (FlxG.mouse.y - player.y)/6);
+		
 		super.update();
+
+		FlxG.collide(bullets, level.level, onCollision);
+		FlxG.collide(player, level.level);
 	}	
+
+	private function forDebug(){
+		if(FlxG.keys.justPressed.R){
+			trace("Restart level.");
+			FlxG.switchState(new PlayState());
+		}
+	}
+
+	/*
+	 *	Callback function called by overlap() in update
+	 */
+	private function onCollision(Object1:FlxObject, Object2:FlxObject):Void{
+		// Bullet collide with level
+		if(Std.is(Object1, Bullet)){
+			Object1.kill();
+		}
+	}
+
+	private function setupPlayer():Void
+	{
+        bullets = new FlxTypedGroup<Bullet>();
+        bullets.maxSize = 50;
+
+		player = new Player(0,0,bullets);
+	}
+
+	private function setupLevel():Void
+	{
+		level = new Level();
+	}
+
+	private function setupWorld():Void
+	{
+		FlxG.worldBounds.width = (level.level.widthInTiles + 1) * Reg.T_WIDTH;
+		FlxG.worldBounds.height = (level.level.heightInTiles + 1) * Reg.T_HEIGHT;
+	}
+
+	private function setupCamera():Void
+	{
+		cameraTarget = new FlxSprite(0,0);
+		FlxG.camera.follow(cameraTarget, FlxCamera.STYLE_LOCKON, 7);
+	}
 }
