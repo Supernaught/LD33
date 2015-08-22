@@ -25,6 +25,8 @@ class PlaygroundState extends FlxState
 
         level = new Level();
 
+        Reg.getPlayerAnim(player);
+        player.animation.play("playerIdle");
         add(level.level);
         add(player);
 

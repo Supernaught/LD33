@@ -5,10 +5,10 @@ import flixel.FlxSprite;
 
 class Reg
 {
-	// Assets
-	public static inline var PLAYER_SPRITESHEET = "assets/images/player_anim.png";
-	public static inline var ENEMY1_SPRITESHEET = "assets/images/enemy_anim.png";
-
+	// // Assets
+	// public static inline var PLAYER_SPRITESHEET = "assets/images/player_anim.png";
+	// public static inline var ENEMY1_SPRITESHEET = "assets/images/enemy_anim.png";
+	public static inline var SPRITESHEET = "assets/images/ld33_tilesheet.png";
 	// Physics
 	public static inline var GRAVITY = 2.4;
 
@@ -30,7 +30,8 @@ class Reg
 	public static inline var ENEMY_3:Int = 3;
 
 	public static function getPlayerAnim(Player:FlxSprite){
-		Player.loadGraphic(PLAYER_SPRITESHEET, true, 8);
+		Player.loadGraphic(SPRITESHEET, true, 8);
 		Player.animation.add("test", [1], 30);
+		Player.animation.add("playerIdle", [24], 30);
 	}
 }
