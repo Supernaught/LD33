@@ -10,7 +10,7 @@ class Level {
 
 	public function new(){
 		level = new FlxTilemap();
-		level.loadMap(Assets.getText("assets/data/map.csv"), "assets/images/tiles.png", Reg.T_WIDTH, Reg.T_HEIGHT);
+		level.loadMap(Assets.getText("assets/data/plain.csv"), "assets/images/tiles.png", Reg.T_WIDTH, Reg.T_HEIGHT);
 
 		// tile #2 = collide from up only
 		level.setTileProperties(2,FlxObject.UP);

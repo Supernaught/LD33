@@ -1,7 +1,9 @@
 package;
 
 import flixel.FlxSprite;
+import flixel.FlxObject;
 import flixel.FlxG;
+import flixel.util.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.group.FlxTypedGroup;
 
@@ -9,18 +11,28 @@ class Player extends FlxSprite
 {
     private static var ATTACK_COOLDOWN:Float = 0.1; // in milliseconds
 
-    // Physics stuff
-    private var maxSpeedX:Int = 150;
-    private var maxSpeedY:Int = 400;
+    private var unitType:Int = Reg.HUMAN;
 
-    private var jumpForceMultiplier:Float = 0.7;
-    private var gravityMultiplier:Float = 2.4;
-    private var xDragMultiplier:Float = 2;
-    private var xAcceleration:Float; // used to set acceleration when pressing move keys
-    private var jumpForce:Float;
+    // Physics stuff
+    private var maxSpeedX:Int = 120;
+    private var maxSpeedY:Int = 250;
+
+    private var movespeed:Float = 10000; // used to set velocity when pressing move keys
+    private var jumpForce:Float = 200;
+
+    // Jump stuff
+    private var canJump:Bool;
 
     // Attack stuff
+    private var canAttack:Bool;
+    private var attackDelay:Float = 0.1;
     private var attackDelayCounter:Float;
+
+    private var bullets:FlxTypedGroup<Bullet>;
+    
+    private var MELEE_ATTACK_FRAMES:Int = 2; // used for melee attack hit "bullet"    
+    private var meleeAttackFrameCounter:Int;
+    private var isMeleeAttacking:Bool;
 
 
     public function new(X:Int, Y:Int, Bullets:FlxTypedGroup<Bullet>)
@@ -28,20 +40,42 @@ class Player extends FlxSprite
         super(X,Y);
 
         // Animation sprites stuff
-        makeGraphic(Reg.T_WIDTH, Reg.T_HEIGHT, FlxColor.WHITE);
+        makeGraphic(Reg.T_WIDTH, Reg.T_HEIGHT, FlxColor.GREEN);
+
+        var yOffset = 2;
+        var xOffset = 2;
+
+        width -= xOffset;
+        height -= yOffset;
+
+        offset.set(0,yOffset);
+
+        // Attack stuff
+        canAttack = false;
+        bullets = Bullets;
+        meleeAttackFrameCounter = 0;
+        isMeleeAttacking = false;
 
         // Physics and movement stuff
+        acceleration.y = maxSpeedY * Reg.GRAVITY;
         maxVelocity.set(maxSpeedX, maxSpeedY);
-        acceleration.y = maxSpeedY * gravityMultiplier;
-        jumpForce = maxSpeedY * jumpForceMultiplier;
+        drag.x = movespeed;
 
-        xAcceleration = maxSpeedX * 10;
-        drag.x = xAcceleration * xDragMultiplier;
+        // Jump stuff
+        canJump = true;
+
     }
 
     override public function update():Void
     {
-        playerControls();
+        if(!canJump && isTouching(FlxObject.FLOOR)){
+            canJump = true;
+        }
+        
+        movementControls();
+        attackControls();
+
+        attackUpdate();
 
         super.update();
     }
@@ -51,23 +85,80 @@ class Player extends FlxSprite
         super.destroy();
     }
 
-    public function playerControls():Void
+    public function jump():Void
     {
-        movement();
+        if(canJump){
+            velocity.y = -jumpForce;
+            canJump = false;
+        }
     }
 
-    public function movement():Void 
+    public function movementControls():Void 
     {        
-        if(FlxG.keys.pressed.A){
-            acceleration.x = -xAcceleration;
-        } else if(FlxG.keys.pressed.D){
-            acceleration.x = xAcceleration;
+        if(FlxG.keys.pressed.A || FlxG.keys.pressed.LEFT){
+            acceleration.x = -drag.x;
+            facing = FlxObject.LEFT;
+        } else if(FlxG.keys.pressed.D || FlxG.keys.pressed.RIGHT){
+            acceleration.x = drag.x;
+            facing = FlxObject.RIGHT;
         } else {
             acceleration.x = 0;
         }
 
-        if(FlxG.keys.justPressed.W){
-            velocity.y = -jumpForce;
+        if(FlxG.keys.pressed.W || FlxG.keys.pressed.Z){
+            if(canJump){
+                jump();
+            }
+            else {
+                acceleration.y = maxSpeedY * Reg.GRAVITY/2;
+            }
+        } else {
+            acceleration.y = maxSpeedY * Reg.GRAVITY;
         }
+    }
+
+    public function attackControls():Void
+    {
+        if(canAttack && (FlxG.mouse.justPressed || FlxG.keys.pressed.X))
+        {
+            attack();
+        }
+    }
+
+    public function attackUpdate():Void
+    {
+        if(!canAttack){
+            if(attackDelayCounter >= 0){
+                attackDelayCounter -= FlxG.elapsed;
+            } else {
+                attackDelayCounter = attackDelay;
+                canAttack = true;
+            }
+        }
+        // if(isMeleeAttacking){
+        //     trace("attacking");
+        //     meleeAttackFrameCounter--;
+
+        //     if(meleeAttackFrameCounter <= 0){
+        //         isMeleeAttacking = false;
+        //     }
+        // }
+    }
+
+    public function attack():Void
+    {
+        canAttack = false;
+
+        // Fire a bullet
+        // if(unitType == Reg.HUMAN){
+        //     var angle = (facing == FlxObject.LEFT) ? -90 : 90;           
+        //     bullets.recycle(RangedBullet).shoot(new FlxPoint(x,y), angle);
+        // }
+
+        // Attack melee
+        isMeleeAttacking = true;
+        meleeAttackFrameCounter = MELEE_ATTACK_FRAMES;
+        var offset = (facing == FlxObject.LEFT) ? -16 : 16;
+        bullets.recycle(MeleeBullet).shoot(new FlxPoint(getGraphicMidpoint().x + offset, getGraphicMidpoint().y - 2), 0);
     }
 }
