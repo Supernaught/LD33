@@ -98,7 +98,7 @@ class PlayState extends FlxState
         bullets = new FlxTypedGroup<Bullet>();
         bullets.maxSize = 50;
 
-		player = new Player(0,0,bullets);
+		player = new Player(3 * 16, 3 * 16,bullets);
 	}
 
 	private function setupEnemies():Void

@@ -53,7 +53,7 @@ class Player extends Unit
         width -= xOffset;
         height -= yOffset;
 
-        offset.set(0,yOffset);
+        // offset.set(0,yOffset);
 
         // Attack stuff
         canAttack = false;
@@ -70,6 +70,13 @@ class Player extends Unit
         canJump = true;
 
         canAttackComponent = new CanAttack(this);
+
+        // Animations
+        Reg.getPlayerAnim(this);
+        animation.play("playerIdle");
+
+        setFacingFlip(FlxObject.LEFT, true, false);
+        setFacingFlip(FlxObject.RIGHT, false, false);
     }
 
     override public function update():Void
@@ -114,12 +121,24 @@ class Player extends Unit
         if(FlxG.keys.pressed.W || FlxG.keys.pressed.Z){
             if(canJump){
                 jump();
+                animation.play("playerJump");
             }
             else {
                 acceleration.y = maxSpeedY * Reg.GRAVITY/2;
             }
         } else {
             acceleration.y = maxSpeedY * Reg.GRAVITY;
+        }
+
+        if(velocity.y > 0){
+            animation.play("playerJump");
+        } else if(velocity.y < 0){
+            animation.play("playerFall");
+        } else{
+            if(acceleration.x != 0)
+                animation.play("playerRun");
+            else
+                animation.play("playerIdle");
         }
     }
 
