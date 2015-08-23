@@ -9,6 +9,8 @@ class Reg
 	// public static inline var PLAYER_SPRITESHEET = "assets/images/player_anim.png";
 	// public static inline var ENEMY1_SPRITESHEET = "assets/images/enemy_anim.png";
 	public static inline var SPRITESHEET = "assets/images/ld33_tilesheet.png";
+	public static inline var PLAYER_SPRITESHEET = "assets/images/player_sheet.png";
+	public static inline var DUST_SPRITESHEET = "assets/images/dust_sheet.png";
 	// Physics
 	public static inline var GRAVITY = 2.4;
 
@@ -30,15 +32,20 @@ class Reg
 	public static inline var ENEMY_3:Int = 3;
 
 	public static function getPlayerAnim(Player:FlxSprite){
-		Player.loadGraphic(SPRITESHEET, true, 16,16);
-		Player.animation.add("playerIdle", [40,41,42,43,43], 10);
-		Player.animation.add("playerRun", [45,46,47,48,47,46,45,44], 18);
-		Player.animation.add("playerFall", [49,50,51], 13);
-		Player.animation.add("playerJump", [52,53,54], 13);
+		Player.loadGraphic(PLAYER_SPRITESHEET, true, 16,16);
+		Player.animation.add("playerIdle", [0,1,2,3], 10);
+		Player.animation.add("playerRun", [4,5,6,7,6,5,4], 18);
+		Player.animation.add("playerFall", [9,10,11], 13);
+		Player.animation.add("playerJump", [12,13,14], 13);
 	}
 
 	public static function getSignPostAnim(Player:FlxSprite){
 		Player.loadGraphic(SPRITESHEET, true, 16,16);
 		Player.animation.add("postSwing", [37,38,39,38], 2);
+	}	
+
+	public static function getDustEffect(Player:FlxSprite){
+		Player.loadGraphic(DUST_SPRITESHEET, true, 16,16);
+		Player.animation.add("jumpDust", [0,1,2,3], 20);
 	}
 }

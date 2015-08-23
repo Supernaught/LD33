@@ -30,8 +30,8 @@ class PlaygroundState extends FlxState
 
         level = new Level();
 
-        Reg.getPlayerAnim(player);
-        player.animation.play("playerJump");
+        Reg.getDustEffect(player);
+        player.animation.play("jumpDust");
 
         enemies = new FlxTypedGroup<Enemy>();
         enemies.maxSize = 100;
