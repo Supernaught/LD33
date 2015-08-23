@@ -10,7 +10,9 @@ class Reg
 	// public static inline var ENEMY1_SPRITESHEET = "assets/images/enemy_anim.png";
 	public static inline var SPRITESHEET = "assets/images/ld33_tilesheet.png";
 	public static inline var PLAYER_SPRITESHEET = "assets/images/player_sheet.png";
+		public static inline var TANK_SPRITESHEET = "assets/images/tank_spritesheet.png";
 	public static inline var DUST_SPRITESHEET = "assets/images/dust_sheet.png";
+	
 	// Physics
 	public static inline var GRAVITY = 2.4;
 
@@ -37,6 +39,21 @@ class Reg
 		Player.animation.add("playerRun", [4,5,6,7,6,5,4], 18);
 		Player.animation.add("playerFall", [9,10,11], 13);
 		Player.animation.add("playerJump", [12,13,14], 13);
+		// Player.loadGraphic(TANK_SPRITESHEET, true, 16,16);
+		// Player.animation.add("playerIdle", [0,1,2], 6);
+		// Player.animation.add("playerRun", [3,4,5,6,7], 8);
+		// Player.animation.add("playerFall", [15,16], 10);
+		// Player.animation.add("playerJump", [13,14], 10);
+		// Player.animation.add("playerAttack", [8,8,8,9,10,11,12], 15);
+	}
+
+	public static function getTankAnim(Player:FlxSprite){
+		Player.loadGraphic(TANK_SPRITESHEET, true, 16,16);
+		Player.animation.add("tankIdle", [0,1,2], 6);
+		Player.animation.add("tankRun", [3,4,5,6,7], 8);
+		Player.animation.add("tankFall", [15,16], 10);
+		Player.animation.add("tankJump", [13,14], 10);
+		Player.animation.add("tankAttack", [8,8,8,9,10,11,12], 15);
 	}
 
 	public static function getSignPostAnim(Player:FlxSprite){
@@ -48,4 +65,5 @@ class Reg
 		Player.loadGraphic(DUST_SPRITESHEET, true, 16,16);
 		Player.animation.add("jumpDust", [0,1,2,3], 20);
 	}
+
 }
