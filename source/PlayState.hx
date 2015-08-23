@@ -41,9 +41,6 @@ class PlayState extends FlxState
 		add(player);
         add(bullets);
         add(enemies);
-
-        // Effects
-        effects = new FlxTypedGroup<Dust>();
         add(effects);
 	}
 	
@@ -96,10 +93,6 @@ class PlayState extends FlxState
 		}
 	}
 
-	public static function createDust(X:Float, Y:Float):Void{
-        effects.add(new Dust(X,Y,Reg.JUMP_DUST));
-	}
-
 	private function bulletHit(Bullet:Bullet, Enemy:Enemy):Void
 	{
 		Bullet.kill();
@@ -116,10 +109,14 @@ class PlayState extends FlxState
 
 	private function setupPlayer():Void
 	{
+        // Effects
+        effects = new FlxTypedGroup<Dust>();
+        effects.maxSize = 30;
+
         bullets = new FlxTypedGroup<Bullet>();
         bullets.maxSize = 50;
 
-		player = new Player(3 * 16, 3 * 16,bullets);
+		player = new Player(3 * 16, 3 * 16,bullets, effects);
 	}
 
 	private function setupEnemies():Void

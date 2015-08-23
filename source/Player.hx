@@ -14,7 +14,7 @@ class Player extends Unit
     private var unitType:Int = Reg.UNIT_HUMAN;
 
     // Physics stuff
-    private var maxSpeedX:Int = 120;
+    private var maxSpeedX:Int = 100;
     private var maxSpeedY:Int = 220;
 
     private var movespeed:Float = 10000; // used to set velocity when pressing move keys
@@ -33,6 +33,7 @@ class Player extends Unit
     private var yAim:Int;
 
     private var bullets:FlxTypedGroup<Bullet>;
+    private var effects:FlxTypedGroup<Dust>;
     
     private var MELEE_ATTACK_FRAMES:Int = 2; // used for melee attack hit "bullet"    
     private var meleeAttackFrameCounter:Int;
@@ -41,7 +42,7 @@ class Player extends Unit
     // Components
     private var canAttackComponent:CanAttack;
 
-    public function new(X:Int, Y:Int, Bullets:FlxTypedGroup<Bullet>)
+    public function new(X:Int, Y:Int, Bullets:FlxTypedGroup<Bullet>, Effects:FlxTypedGroup<Dust>)
     {
         super(X,Y);
 
@@ -79,6 +80,8 @@ class Player extends Unit
         switchToUnit(Reg.UNIT_HUMAN);
         animation.play("idle");
 
+        effects = Effects;
+
         setFacingFlip(FlxObject.LEFT, true, false);
         setFacingFlip(FlxObject.RIGHT, false, false);
     }
@@ -106,7 +109,7 @@ class Player extends Unit
 
     public function jump():Void
     {
-        PlayState.createDust(x,y);
+        createDust(x,y);
         if(canJump){
             velocity.y = -jumpForce;
             canJump = false;
@@ -301,5 +304,9 @@ class Player extends Unit
     public function takeDamage():Void{
         FlxG.camera.shake(0.01, 0.05);
         FlxG.camera.flash(null, 0.5);
+    }
+
+    public function createDust(X:Float, Y:Float):Void{
+        effects.add(new Dust(X,Y,Reg.JUMP_DUST));
     }
 }

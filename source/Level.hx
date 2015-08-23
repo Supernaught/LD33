@@ -30,7 +30,9 @@ class Level {
 
 
 		// enemies.add(new Enemy(0,0));
-		enemies.add(new EnemyTank(256,128));
+		if(enemies != null){
+			enemies.add(new EnemyTank(256,128));
+		}
 		// enemies.add(new EnemyArcher(230,128));
 
 		// if(level.getTileCoords(55, false) != null){

@@ -18,6 +18,7 @@ class PlaygroundState extends FlxState
     var enemies:FlxTypedGroup<Enemy>;
 
     public var bg:FlxSprite;
+    public static var effects:FlxTypedGroup<Dust>;
 
     override public function create():Void
     {
@@ -26,9 +27,12 @@ class PlaygroundState extends FlxState
         bullets = new FlxTypedGroup<Bullet>();
         bullets.maxSize = 50;
 
-        player = new Player(3 * Reg.T_WIDTH, 3 * Reg.T_HEIGHT,bullets);
+        effects = new FlxTypedGroup<Dust>();
+        add(effects);
 
-        level = new Level(Reg.TEST);
+        player = new Player(3 * Reg.T_WIDTH, 3 * Reg.T_HEIGHT,bullets,effects);
+
+        level = new Level(Reg.TEST, null);
 
         Reg.getPlayerAnim(player);
         player.animation.play("playerIdle");
@@ -98,5 +102,4 @@ class PlaygroundState extends FlxState
             // camera shake
         }
     }
-
 }

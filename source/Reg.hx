@@ -60,7 +60,7 @@ class Reg
 		Player.animation.add("run", [3,4,5,6,7], 8);
 		Player.animation.add("fall", [15,16], 10);
 		Player.animation.add("jump", [13,14], 10);
-		Player.animation.add("attack", [8,8,8,9,10,11,12], 30, false);
+		Player.animation.add("attack", [8,9,10,11,12], 30, false);
 	}
 
 	public static function getSignPostAnim(Player:FlxSprite){
@@ -72,5 +72,6 @@ class Reg
 		Sprite.loadGraphic(DUST_SPRITESHEET, true, 16,16);
 		Sprite.animation.add("jumpDust", [0,1,2,3], 20, false);
 	}
+
 
 }
