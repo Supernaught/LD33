@@ -16,6 +16,7 @@ class EnemyTank extends EnemyWalking
 
         Reg.getTankAnim(this);
         animation.play("idle");
+        unitType = Reg.UNIT_TANK;
     }
 
     override public function update():Void

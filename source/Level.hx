@@ -29,9 +29,9 @@ class Level {
 		level.setTileProperties(39,FlxObject.NONE);
 
 
-		enemies.add(new Enemy(0,0));
+		// enemies.add(new Enemy(0,0));
 		enemies.add(new EnemyTank(256,128));
-		enemies.add(new EnemyArcher(230,128));
+		// enemies.add(new EnemyArcher(230,128));
 
 		// if(level.getTileCoords(55, false) != null){
 		// 	for(point in level.getTileCoords(55, false)){

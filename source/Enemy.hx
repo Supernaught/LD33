@@ -11,6 +11,8 @@ class Enemy extends Unit
     // Enemy stuff
     var hp:Int = 1;
 
+    var unitType:Int;
+
     // Physics stuff, default values
     var maxSpeedX:Int = 120;
     var maxSpeedY:Int = 220;
@@ -48,6 +50,8 @@ class Enemy extends Unit
     }
 
     public function die():Void{
+        FlxG.camera.shake(0.01,0.2);
+        PlayState.player.switchToUnit(unitType);
     	super.kill();
     }
 }

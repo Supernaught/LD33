@@ -31,6 +31,10 @@ class Reg
 	public static inline var UNIT_HUMAN:Int = 0;
 	public static inline var UNIT_MELEE:Int = 1;
 	public static inline var UNIT_RANGED:Int = 2;
+	public static inline var UNIT_TANK:Int = 3;
+
+	// Dust Effect Types
+	public static inline var JUMP_DUST:String = "JUMP_DUST";
 
 	// Levels
 	public static inline var TEST:String = "assets/data/ld33_tileset.csv";
@@ -64,9 +68,9 @@ class Reg
 		Player.animation.add("postSwing", [37,38,39,38], 2);
 	}	
 
-	public static function getDustEffect(Dust:FlxSprite){
-		Dust.loadGraphic(DUST_SPRITESHEET, true, 16,16);
-		Dust.animation.add("jumpDust", [0,1,2,3], 20);
+	public static function getDustEffect(Sprite:FlxSprite){
+		Sprite.loadGraphic(DUST_SPRITESHEET, true, 16,16);
+		Sprite.animation.add("jumpDust", [0,1,2,3], 20, false);
 	}
 
 }

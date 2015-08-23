@@ -25,7 +25,7 @@ class Player extends Unit
 
     // Attack stuff
     private var canAttack:Bool;
-    private var attackDelay:Float = 0.7;
+    private var attackDelay:Float = 0.4;
     private var attackDelayCounter:Float;
 
     private var aiming:Bool; // used for ranged attacks
@@ -51,13 +51,13 @@ class Player extends Unit
         // Animation sprites stuff
         makeGraphic(Reg.T_WIDTH, Reg.T_HEIGHT, 0xffc71045);
 
-        var yOffset = 2;
+        var yOffset = 4;
         var xOffset = 2;
 
         width -= xOffset;
         height -= yOffset;
 
-        // offset.set(0,yOffset);
+        offset.set(0,-1);
 
         // Attack stuff
         canAttack = false;
@@ -106,6 +106,7 @@ class Player extends Unit
 
     public function jump():Void
     {
+        PlayState.createDust(x,y);
         if(canJump){
             velocity.y = -jumpForce;
             canJump = false;
@@ -128,9 +129,15 @@ class Player extends Unit
     public function switchToUnit(UnitType:Int){
         unitType = UnitType;
 
+        trace(unitType);
+
         switch(UnitType){
             case Reg.UNIT_HUMAN:
             Reg.getPlayerAnim(this);
+
+            case Reg.UNIT_TANK:
+            trace("tank");
+            Reg.getTankAnim(this);
 
             case Reg.UNIT_MELEE:
             Reg.getTankAnim(this);
@@ -143,13 +150,13 @@ class Player extends Unit
     public function movementControls():Void 
     {      
         if((FlxG.keys.pressed.A || FlxG.keys.pressed.LEFT)){
-            if(!aiming){
+            if(!aiming && canAttack){
                 acceleration.x = -drag.x;
             }
 
             facing = FlxObject.LEFT;
         } else if(FlxG.keys.pressed.D || FlxG.keys.pressed.RIGHT){
-            if(!aiming){
+            if(!aiming && canAttack){
                 acceleration.x = drag.x;
             }            
 
@@ -189,7 +196,7 @@ class Player extends Unit
     {
         if(canAttack)
         {
-            if(unitType == Reg.UNIT_MELEE && (FlxG.mouse.justPressed || FlxG.keys.pressed.X)){
+            if((unitType == Reg.UNIT_HUMAN || unitType == Reg.UNIT_TANK) && (FlxG.mouse.justPressed || FlxG.keys.pressed.X)){
                 attack();
             }
             else if(unitType == Reg.UNIT_RANGED){
@@ -282,7 +289,8 @@ class Player extends Unit
         }
 
         // Attack melee
-        if(unitType == Reg.UNIT_MELEE){
+        if(unitType == Reg.UNIT_MELEE || unitType == Reg.UNIT_HUMAN || unitType == Reg.UNIT_TANK){
+            acceleration.x = 0;
             isMeleeAttacking = true;
             meleeAttackFrameCounter = MELEE_ATTACK_FRAMES;
             var offset = (facing == FlxObject.LEFT) ? -16 : 16;

@@ -19,9 +19,10 @@ class PlayState extends FlxState
 
 	var bg:FlxSprite;
 	var bg2:FlxSprite;
-	var player:Player;
+	public static var player:Player;
 	var bullets:FlxTypedGroup<Bullet>;
 	var enemies:FlxTypedGroup<Enemy>;
+	public static var effects:FlxTypedGroup<Dust>;
 
 	override public function create():Void
 	{
@@ -40,6 +41,10 @@ class PlayState extends FlxState
 		add(player);
         add(bullets);
         add(enemies);
+
+        // Effects
+        effects = new FlxTypedGroup<Dust>();
+        add(effects);
 	}
 	
 	override public function destroy():Void
@@ -91,12 +96,15 @@ class PlayState extends FlxState
 		}
 	}
 
+	public static function createDust(X:Float, Y:Float):Void{
+        effects.add(new Dust(X,Y,Reg.JUMP_DUST));
+	}
+
 	private function bulletHit(Bullet:Bullet, Enemy:Enemy):Void
 	{
 		Bullet.kill();
 
 		if(Enemy.takeDamage(1)){
-			FlxG.camera.shake(0.01,0.15);
 			// enemy gibs
 			// camera shake
 		}
