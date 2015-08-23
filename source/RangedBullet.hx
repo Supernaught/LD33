@@ -17,13 +17,15 @@ class RangedBullet extends Bullet
 
         makeGraphic(6, 14, FlxColor.WHITE);
 
-        speed = 360 * 2;
+        speed = 400;
+
+        acceleration.y = 200;
+        acceleration.x = -100;
     }
 
     override public function update():Void
     {
         super.update();
-
     }
 
     override public function destroy():Void
@@ -35,6 +37,8 @@ class RangedBullet extends Bullet
         super.reset(Pos.x - width / 2, Pos.y - height / 2);
 
         angle = Angle;
+        angularVelocity = (angle > 0) ? 5 : -5;
+        angularAcceleration = angularVelocity * 2;
         velocity = FlxVelocity.velocityFromAngle(angle - 90, speed);
     }
 }

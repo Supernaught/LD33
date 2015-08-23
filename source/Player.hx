@@ -11,22 +11,26 @@ class Player extends Unit
 {
     private static var ATTACK_COOLDOWN:Float = 0.1; // in milliseconds
 
-    private var unitType:Int = Reg.HUMAN;
+    private var unitType:Int = Reg.UNIT_HUMAN;
 
     // Physics stuff
     private var maxSpeedX:Int = 120;
-    private var maxSpeedY:Int = 250;
+    private var maxSpeedY:Int = 220;
 
     private var movespeed:Float = 10000; // used to set velocity when pressing move keys
-    private var jumpForce:Float = 200;
+    private var jumpForce:Float = 170;
 
     // Jump stuff
     private var canJump:Bool;
 
     // Attack stuff
     private var canAttack:Bool;
-    private var attackDelay:Float = 0.1;
+    private var attackDelay:Float = 0.7;
     private var attackDelayCounter:Float;
+
+    private var aiming:Bool; // used for ranged attacks
+    private var xAim:Int;
+    private var yAim:Int;
 
     private var bullets:FlxTypedGroup<Bullet>;
     
@@ -72,8 +76,8 @@ class Player extends Unit
         canAttackComponent = new CanAttack(this);
 
         // Animations
-        Reg.getPlayerAnim(this);
-        animation.play("playerIdle");
+        switchToUnit(Reg.UNIT_HUMAN);
+        animation.play("idle");
 
         setFacingFlip(FlxObject.LEFT, true, false);
         setFacingFlip(FlxObject.RIGHT, false, false);
@@ -85,10 +89,12 @@ class Player extends Unit
             canJump = true;
         }
         
+        forDebug();
         movementControls();
         attackControls();
 
         attackUpdate();
+        animationUpdate();
 
         super.update();
     }
@@ -106,13 +112,47 @@ class Player extends Unit
         }
     }
 
+    public function forDebug():Void
+    {
+        if(FlxG.keys.pressed.ONE){
+            switchToUnit(Reg.UNIT_HUMAN);
+        } 
+        if(FlxG.keys.pressed.TWO){
+            switchToUnit(Reg.UNIT_MELEE);
+        } 
+        if(FlxG.keys.pressed.THREE){
+            switchToUnit(Reg.UNIT_RANGED);
+        } 
+    }
+
+    public function switchToUnit(UnitType:Int){
+        unitType = UnitType;
+
+        switch(UnitType){
+            case Reg.UNIT_HUMAN:
+            Reg.getPlayerAnim(this);
+
+            case Reg.UNIT_MELEE:
+            Reg.getTankAnim(this);
+
+            case Reg.UNIT_RANGED:
+            trace("ranged");
+        }
+    }
+
     public function movementControls():Void 
-    {        
-        if(FlxG.keys.pressed.A || FlxG.keys.pressed.LEFT){
-            acceleration.x = -drag.x;
+    {      
+        if((FlxG.keys.pressed.A || FlxG.keys.pressed.LEFT)){
+            if(!aiming){
+                acceleration.x = -drag.x;
+            }
+
             facing = FlxObject.LEFT;
         } else if(FlxG.keys.pressed.D || FlxG.keys.pressed.RIGHT){
-            acceleration.x = drag.x;
+            if(!aiming){
+                acceleration.x = drag.x;
+            }            
+
             facing = FlxObject.RIGHT;
         } else {
             acceleration.x = 0;
@@ -121,7 +161,6 @@ class Player extends Unit
         if(FlxG.keys.pressed.W || FlxG.keys.pressed.Z){
             if(canJump){
                 jump();
-                animation.play("playerJump");
             }
             else {
                 acceleration.y = maxSpeedY * Reg.GRAVITY/2;
@@ -129,24 +168,84 @@ class Player extends Unit
         } else {
             acceleration.y = maxSpeedY * Reg.GRAVITY;
         }
+    }
 
-        if(velocity.y < 0){
-            animation.play("playerJump");
-        } else if(velocity.y > 0){
-            animation.play("playerFall");
-        } else{
-            if(acceleration.x != 0)
-                animation.play("playerRun");
-            else
-                animation.play("playerIdle");
+    public function animationUpdate():Void{
+        if(canAttack){
+            if(velocity.y < 0){
+                animation.play("jump");
+            } else if(velocity.y > 0){
+                animation.play("fall");
+            } else{
+                if(acceleration.x != 0)
+                    animation.play("run");
+                else
+                    animation.play("idle");
+            }
         }
     }
 
     public function attackControls():Void
     {
-        if(canAttack && (FlxG.mouse.justPressed || FlxG.keys.pressed.X))
+        if(canAttack)
         {
-            attack();
+            if(unitType == Reg.UNIT_MELEE && (FlxG.mouse.justPressed || FlxG.keys.pressed.X)){
+                attack();
+            }
+            else if(unitType == Reg.UNIT_RANGED){
+                if(FlxG.keys.pressed.X){
+                    if(!aiming){
+                        aiming = true;
+                        acceleration.x = 0;
+                        // bullets.recycle(RangedBullet);
+                    }
+
+                    if(FlxG.keys.pressed.LEFT){
+                        xAim = FlxObject.LEFT;
+                    } else if(FlxG.keys.pressed.RIGHT){
+                        xAim = FlxObject.RIGHT;
+                    }
+                    
+                    // xAim = facing;
+
+                    // yAim = FlxObject.NONE;
+
+                    if(FlxG.keys.pressed.UP){
+                        yAim = FlxObject.UP;
+                    } else if(FlxG.keys.pressed.DOWN){
+                        yAim = FlxObject.DOWN;
+                    }
+
+                } else if(aiming && FlxG.keys.justReleased.X){
+                    // attack();
+
+                    trace(xAim + " " + yAim);
+
+                    var angle = 90;
+
+                    if(yAim == FlxObject.UP){
+                        angle = (xAim != FlxObject.NONE) ? 35 : 0;
+                    } else if(yAim == FlxObject.DOWN){
+                        angle = (xAim != FlxObject.NONE) ? 135 : 180;
+                    }
+
+                    // if(xAim == FlxObject.RIGHT){
+                    //     angle = 90;
+                    // }
+                    // else {
+                    //     angle = -90;
+                    // }
+
+                    angle = (facing == FlxObject.RIGHT)? angle : angle * -1;
+
+                    bullets.recycle(RangedBullet).shoot(new FlxPoint(x,y), angle);
+
+                    aiming = false;
+                    yAim = FlxObject.NONE;
+                    xAim = FlxObject.NONE;
+                }
+            }
+
         }
     }
 
@@ -172,20 +271,27 @@ class Player extends Unit
 
     public function attack():Void
     {
+        animation.play("attack");
+
         canAttack = false;
 
         // Fire a bullet
-        // if(unitType == Reg.HUMAN){
-        //     var angle = (facing == FlxObject.LEFT) ? -90 : 90;           
-        //     bullets.recycle(RangedBullet).shoot(new FlxPoint(x,y), angle);
-        // }
-
-        canAttackComponent.attack();
+        if(unitType == Reg.UNIT_RANGED){
+            var angle = (facing == FlxObject.LEFT) ? -90 : 90;           
+            bullets.recycle(RangedBullet).shoot(new FlxPoint(x,y), angle);
+        }
 
         // Attack melee
-        isMeleeAttacking = true;
-        meleeAttackFrameCounter = MELEE_ATTACK_FRAMES;
-        var offset = (facing == FlxObject.LEFT) ? -16 : 16;
-        bullets.recycle(MeleeBullet).shoot(new FlxPoint(getGraphicMidpoint().x + offset, getGraphicMidpoint().y - 2), 0);
+        if(unitType == Reg.UNIT_MELEE){
+            isMeleeAttacking = true;
+            meleeAttackFrameCounter = MELEE_ATTACK_FRAMES;
+            var offset = (facing == FlxObject.LEFT) ? -16 : 16;
+            bullets.recycle(MeleeBullet).shoot(new FlxPoint(getGraphicMidpoint().x + offset, getGraphicMidpoint().y - 2), 0);
+        }
+    }
+
+    public function takeDamage():Void{
+        FlxG.camera.shake(0.01, 0.05);
+        FlxG.camera.flash(null, 0.5);
     }
 }

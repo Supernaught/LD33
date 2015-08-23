@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxSprite;
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
 
@@ -12,12 +13,18 @@ class Enemy extends Unit
 
     // Physics stuff, default values
     var maxSpeedX:Int = 120;
-    var maxSpeedY:Int = 400;
+    var maxSpeedY:Int = 220;
     public var movespeed:Float;
 
     public function new(X:Float, Y:Float)
     {
         super(X,Y);
+        acceleration.y = maxSpeedY * Reg.GRAVITY;
+
+        setFacingFlip(FlxObject.LEFT, true, false);
+        setFacingFlip(FlxObject.RIGHT, false, false);
+
+        maxVelocity.set(maxSpeedX, maxSpeedY);
     }
 
     override public function update():Void

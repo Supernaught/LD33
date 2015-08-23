@@ -28,17 +28,20 @@ class Reg
 	public static var saves:Array<FlxSave> = [];
 
 	// Unit Type
-	public static inline var HUMAN:Int = 0;
-	public static inline var ENEMY_1:Int = 1;
-	public static inline var ENEMY_2:Int = 2;
-	public static inline var ENEMY_3:Int = 3;
+	public static inline var UNIT_HUMAN:Int = 0;
+	public static inline var UNIT_MELEE:Int = 1;
+	public static inline var UNIT_RANGED:Int = 2;
+
+	// Levels
+	public static inline var TEST:String = "assets/data/ld33_tileset.csv";
+	public static inline var PLAIN2:String = "assets/data/plain2.csv";
 
 	public static function getPlayerAnim(Player:FlxSprite){
 		Player.loadGraphic(PLAYER_SPRITESHEET, true, 16,16);
-		Player.animation.add("playerIdle", [0,1,2,3], 10);
-		Player.animation.add("playerRun", [4,5,6,7,6,5,4], 18);
-		Player.animation.add("playerFall", [9,10,11], 13);
-		Player.animation.add("playerJump", [12,13,14], 13);
+		Player.animation.add("idle", [0,1,2,3], 10);
+		Player.animation.add("run", [4,5,6,7,6,5,4], 18);
+		Player.animation.add("fall", [9,10,11], 13);
+		Player.animation.add("jump", [12,13,14], 13);
 		// Player.loadGraphic(TANK_SPRITESHEET, true, 16,16);
 		// Player.animation.add("playerIdle", [0,1,2], 6);
 		// Player.animation.add("playerRun", [3,4,5,6,7], 8);
@@ -49,11 +52,11 @@ class Reg
 
 	public static function getTankAnim(Player:FlxSprite){
 		Player.loadGraphic(TANK_SPRITESHEET, true, 16,16);
-		Player.animation.add("tankIdle", [0,1,2], 6);
-		Player.animation.add("tankRun", [3,4,5,6,7], 8);
-		Player.animation.add("tankFall", [15,16], 10);
-		Player.animation.add("tankJump", [13,14], 10);
-		Player.animation.add("tankAttack", [8,8,8,9,10,11,12], 15);
+		Player.animation.add("idle", [0,1,2], 6);
+		Player.animation.add("run", [3,4,5,6,7], 8);
+		Player.animation.add("fall", [15,16], 10);
+		Player.animation.add("jump", [13,14], 10);
+		Player.animation.add("attack", [8,8,8,9,10,11,12], 30, false);
 	}
 
 	public static function getSignPostAnim(Player:FlxSprite){
@@ -61,9 +64,9 @@ class Reg
 		Player.animation.add("postSwing", [37,38,39,38], 2);
 	}	
 
-	public static function getDustEffect(Player:FlxSprite){
-		Player.loadGraphic(DUST_SPRITESHEET, true, 16,16);
-		Player.animation.add("jumpDust", [0,1,2,3], 20);
+	public static function getDustEffect(Dust:FlxSprite){
+		Dust.loadGraphic(DUST_SPRITESHEET, true, 16,16);
+		Dust.animation.add("jumpDust", [0,1,2,3], 20);
 	}
 
 }

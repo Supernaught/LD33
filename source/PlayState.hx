@@ -27,11 +27,11 @@ class PlayState extends FlxState
 	{
 		super.create();
 
-		setupPlayer();
+		setupEnemies();
 		setupLevel();
+		setupPlayer();
 		setupWorld();
 		setupCamera();
-		setupEnemies();
 		// setupBg();
 
 		FlxG.camera.bgColor = 0xff23173b;
@@ -45,6 +45,14 @@ class PlayState extends FlxState
 	override public function destroy():Void
 	{
 		super.destroy();
+
+		level = null;
+		player = null;
+		bullets = null;
+		enemies = null;
+		bg = null;
+
+		super.destroy();
 	}
 
 	override public function update():Void
@@ -56,6 +64,7 @@ class PlayState extends FlxState
 
 		FlxG.collide(bullets, level.level, onCollision);
 		FlxG.overlap(bullets, enemies, bulletHit);
+		FlxG.overlap(player, enemies, playerHit);
 		FlxG.collide(enemies, level.level, onCollision);
 		FlxG.collide(player, level.level);
 
@@ -68,7 +77,7 @@ class PlayState extends FlxState
 		}
 		if(FlxG.keys.justPressed.SPACE){
 			trace("Spawn enemy.");
-			enemies.add(new EnemyWalking(10,100));
+			enemies.add(new Enemy(10,100));
 		}
 	}
 
@@ -93,6 +102,10 @@ class PlayState extends FlxState
 		}
 	}
 
+	private function playerHit(Player:Player, Enemy:Enemy):Void{
+		Player.takeDamage();
+	}
+
 	private function setupPlayer():Void
 	{
         bullets = new FlxTypedGroup<Bullet>();
@@ -109,7 +122,7 @@ class PlayState extends FlxState
 
 	private function setupLevel():Void
 	{
-		level = new Level();
+		level = new Level(Reg.PLAIN2, enemies);
 	}
 
 	private function setupWorld():Void
@@ -122,15 +135,13 @@ class PlayState extends FlxState
 	{
 		cameraTarget = new FlxSprite(0,0);
 		FlxG.camera.follow(cameraTarget, FlxCamera.STYLE_LOCKON, 7);
+		FlxG.camera.setBounds(0,-200,level.level.width, level.level.height*2);
 	}
 
 	private function setupBg():Void
 	{
 		bg = new FlxSprite(0, 0, "assets/images/cave_walls.png");
-		bg.scrollFactor.set(0.1,0.1);
+		bg.scrollFactor.set(0.6,0.6);
 		add(bg);
-		bg2 = new FlxSprite(0, 0, "assets/images/bg2.png");
-		bg2.scrollFactor.set(0.15,0.15);
-		add(bg2);
 	}
 }
