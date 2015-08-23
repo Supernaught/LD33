@@ -130,9 +130,9 @@ class Player extends Unit
             acceleration.y = maxSpeedY * Reg.GRAVITY;
         }
 
-        if(velocity.y > 0){
+        if(velocity.y < 0){
             animation.play("playerJump");
-        } else if(velocity.y < 0){
+        } else if(velocity.y > 0){
             animation.play("playerFall");
         } else{
             if(acceleration.x != 0)
