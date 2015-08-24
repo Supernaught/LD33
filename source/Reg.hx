@@ -13,7 +13,15 @@ class Reg
 	public static inline var TANK_SPRITESHEET = "assets/images/tank_spritesheet.png";
 	public static inline var ARCHER_SPRITESHEET = "assets/images/archer_spritesheet.png";
 	public static inline var GARGOYLE_SPRITESHEET = "assets/images/gargoyle_spritesheet.png";
+	
+	public static inline var SMASH_SPRITESHEET = "assets/images/tanksmash_spritesheet.png";
+	public static inline var BLOOD_SPRITESHEET = "assets/images/meatparticles_spritesheet.png";
 	public static inline var DUST_SPRITESHEET = "assets/images/dust_spritesheet.png";
+	public static inline var ARROW_SPRITE = "assets/images/arrow_sprite.png";
+	public static inline var MOON_SPRITE = "assets/images/moon_sprite.png";
+	
+	// public static inline var DUST_SPRITESHEET = "assets/images/dust_spritesheet.png";
+
 	
 	// Physics
 	public static inline var GRAVITY = 2.4;
@@ -44,11 +52,11 @@ class Reg
 	public static inline var PLAIN2:String = "assets/data/plain2.csv";
 
 	public static function getPlayerAnim(Player:FlxSprite){
-		// Player.loadGraphic(PLAYER_SPRITESHEET, true, 16,16);
-		// Player.animation.add("idle", [0,1,2,3], 10);
-		// Player.animation.add("run", [4,5,6,7,6,5,4], 18);
-		// Player.animation.add("fall", [9,10,11], 13);
-		// Player.animation.add("jump", [12,13,14], 13);
+		Player.loadGraphic(PLAYER_SPRITESHEET, true, 16,16);
+		Player.animation.add("idle", [0,1,2,3], 10);
+		Player.animation.add("run", [4,5,6,7,6,5,4], 18);
+		Player.animation.add("fall", [9,10,11], 13);
+		Player.animation.add("jump", [12,13,14], 13);
 
 		// Player.loadGraphic(TANK_SPRITESHEET, true, 16,16);
 		// Player.animation.add("playerIdle", [0,1,2], 6);
@@ -57,11 +65,11 @@ class Reg
 		// Player.animation.add("playerJump", [13,14], 10);
 		// Player.animation.add("playerAttack", [8,8,8,9,10,11,12], 15);
 
-		Player.loadGraphic(PLAYER_SPRITESHEET, true, 16,16);
-		Player.animation.add("idle", [0,1,2,3], 10);
-		Player.animation.add("run", [4,5,6,7,8,7,6,5], 18);
-		Player.animation.add("fall", [9,10,11], 13);
-		Player.animation.add("jump", [12,13,14], 13);
+		// Player.loadGraphic(PLAYER_SPRITESHEET, true, 16,16);
+		// Player.animation.add("idle", [0,1,2,3], 10);
+		// Player.animation.add("run", [4,5,6,7,8,7,6,5], 18);
+		// Player.animation.add("fall", [9,10,11], 13);
+		// Player.animation.add("jump", [12,13,14], 13);
 	}
 
 	public static function getTankAnim(Player:FlxSprite){
@@ -99,6 +107,12 @@ class Reg
 		Sprite.loadGraphic(DUST_SPRITESHEET, true, 16,16);
 		Sprite.animation.add("jumpDust", [0,1,2,3], 25, false);
 	}
+
+public static function getSmashEffect(Sprite:FlxSprite){
+		Sprite.loadGraphic(SMASH_SPRITESHEET, true, 16,16);
+		Sprite.animation.add("jumpDust", [9,9,0,1,2,3,4,5,6,7,8], 30, false);
+	}
+
 
 	
 }
