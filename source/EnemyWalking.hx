@@ -9,10 +9,9 @@ class EnemyWalking extends Enemy
 {
     public function new()
     {
+        super();
         hp = 3;
         movespeed = 1000;
-        
-        super();
         
         maxSpeedX = 50;
         drag.x = movespeed;

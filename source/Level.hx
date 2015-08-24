@@ -15,7 +15,7 @@ class Level {
 
 	public function new(LevelName:String, Enemies:FlxTypedGroup<Enemy>, EnemyBullets:FlxTypedGroup<Bullet>, Player:Player){
 		level = new FlxTilemap();
-		level.loadMap(Assets.getText(LevelName), "assets/images/ld33_tilesheet.png", Reg.T_WIDTH, Reg.T_HEIGHT, null,null,0);
+		level.loadMap(Assets.getText(LevelName), "assets/images/ld33_tilesheet.png", Reg.T_WIDTH, Reg.T_HEIGHT,0,0,0);
 
 		enemyBullets = EnemyBullets;
 		player = Player;

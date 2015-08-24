@@ -56,11 +56,9 @@ class PlaygroundState extends FlxState
 
     private function forDebug(){
         if(FlxG.keys.justPressed.R){
-            trace("Restart level.");
             FlxG.switchState(this);
         }
         if(FlxG.keys.justPressed.SPACE){
-            trace("Spawn enemy.");
             enemies.add(new EnemyWalking(0,4 * Reg.T_WIDTH));
         }
     }

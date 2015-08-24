@@ -34,6 +34,8 @@ class Player extends Unit
 
     private var bullets:FlxTypedGroup<Bullet>;
     private var effects:FlxTypedGroup<WooshEffects>;
+
+    private var exiting:Bool = false;
     
     // Components
     private var canAttackComponent:CanAttack;
@@ -127,6 +129,8 @@ class Player extends Unit
         }
 
         if(FlxG.keys.pressed.ONE){
+            FlxG.sound.play("hit");
+
             switchToUnit(Reg.UNIT_HUMAN);
         } 
         if(FlxG.keys.pressed.TWO){
@@ -153,8 +157,6 @@ class Player extends Unit
         acceleration.y = UnitStats.DEFAULT_GRAVITY;
         maxVelocity.set(maxSpeedX, maxSpeedY);
 
-        // trace(unitType);
-
         switch(UnitType){
             case Reg.UNIT_HUMAN:
             Reg.getPlayerAnim(this);
@@ -180,11 +182,11 @@ class Player extends Unit
 
     public function movementControls():Void 
     {      
-        if((FlxG.keys.pressed.A || FlxG.keys.pressed.LEFT)){
+        if(FlxG.keys.pressed.LEFT){
             if(canWalk()){
                 acceleration.x = -drag.x;
             }
-        } else if(FlxG.keys.pressed.D || FlxG.keys.pressed.RIGHT){
+        } else if(FlxG.keys.pressed.RIGHT){
             if(canWalk()){
                 acceleration.x = drag.x;
             }            
@@ -192,10 +194,11 @@ class Player extends Unit
             acceleration.x = 0;
         }
 
-        if(FlxG.keys.pressed.UP){
+        if(FlxG.keys.justPressed.UP && !exiting){
             var tileId = PlayState.level.level.getTile(Math.round(x/Reg.T_WIDTH), Math.round(y/Reg.T_HEIGHT));
             if(tileId == 113){
                 nextLevel();
+                exiting = true;
             }
         }
     }
@@ -278,7 +281,7 @@ class Player extends Unit
     {
         if(canAttack)
         {
-            if((unitType == Reg.UNIT_HUMAN || unitType == Reg.UNIT_TANK || unitType == Reg.UNIT_FLYING) && (FlxG.mouse.justPressed || FlxG.keys.justPressed.X)){
+            if((unitType == Reg.UNIT_HUMAN || unitType == Reg.UNIT_TANK || unitType == Reg.UNIT_FLYING) && (FlxG.keys.justPressed.X)){
                 attack();
             }
             else if(unitType == Reg.UNIT_RANGED){
@@ -370,11 +373,11 @@ class Player extends Unit
 
     public function takeDamage():Void{
         FlxG.camera.shake(0.01, 0.1);
-        FlxG.camera.flash(null, 0.5, turnOffSlowMo);
+        FlxG.camera.flash(FlxColor.WHITE, 0.5, turnOffSlowMo);
 
         kill();
 
-        FlxG.timeScale = 0.5;
+        FlxG.timeScale = 0.6;
 
         PlayState.playerDie();
     }
@@ -384,7 +387,6 @@ class Player extends Unit
     }
 
     public function createSmashEffect(X:Float, Y:Float):Void{
-        trace(facing);
         effects.recycle(WooshEffects).createEffect(X,Y,Reg.ATTACK_WOOSH, facing);
     }
 

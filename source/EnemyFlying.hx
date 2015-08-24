@@ -35,6 +35,8 @@ class EnemyFlying extends Enemy
 
         Reg.getGargoyleAnim(this);
         animation.play("fly");
+        width -= 8;
+        offset.set(4,0);
     }
 
     override public function update():Void

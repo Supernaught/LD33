@@ -27,6 +27,8 @@ class EnemyArcher extends Enemy
 
         attackDelay = 1.2;
         canAttack = true;
+        width -= 8;
+        offset.set(4,0);
     }
 
     override public function update():Void

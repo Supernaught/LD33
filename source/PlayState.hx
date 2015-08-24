@@ -8,6 +8,8 @@ import flixel.FlxCamera;
 import flixel.ui.FlxButton;
 import flixel.text.FlxText;
 import flixel.util.FlxPoint;
+import flixel.util.FlxTimer;
+import flixel.util.FlxColor;
 import flixel.util.FlxMath;
 import flixel.tile.FlxTilemap;
 import flixel.tile.FlxTile;
@@ -34,6 +36,7 @@ class PlayState extends FlxState
 
 	override public function create():Void
 	{
+		FlxG.camera.fade(FlxColor.BLACK,0.3,true);
 		FlxG.mouse.visible = false;
 
 		super.create();
@@ -41,8 +44,8 @@ class PlayState extends FlxState
 		setupPlayer();
 		setupEnemies();
 		setupLevel();
-		setupWorld();
 		setupCamera();
+		setupWorld();
 		setupGibs();
 		setupBg();
 
@@ -58,7 +61,11 @@ class PlayState extends FlxState
         add(enemies);
         add(effects);
 
+        // FlxG.timeScale = 1;
+		// FlxG.switchState(new PlayState());
+
         // FlxG.debugger.drawDebug = true;
+        new FlxTimer(0.1, updateCameraFollow);
 	}
 	
 	override public function destroy():Void
@@ -81,7 +88,7 @@ class PlayState extends FlxState
 		
 		super.update();
 
-		level.level.overlapsWithCallback(player,playerLevelCollision, null, null);
+		level.level.overlapsWithCallback(player,playerLevelCollision);
 
 		FlxG.collide(bullets, level.level, onCollision);
 		FlxG.collide(enemyBullets, level.level, onCollision);
@@ -98,7 +105,6 @@ class PlayState extends FlxState
 
 	private function forDebug(){
 		if(FlxG.keys.justPressed.R){
-			trace("Restart level.");
 			FlxG.timeScale = 1;
 			FlxG.switchState(new PlayState());
 		}
@@ -120,10 +126,8 @@ class PlayState extends FlxState
 	}
 
 	private function playerLevelCollision(Tile:FlxObject, Player:FlxObject):Bool{
-		// trace(Tile.index);
 
 		return true;
-		// trace(Level);
 	}
 
 	private function bulletHit(Bullet:Bullet, Enemy:Enemy):Void
@@ -151,6 +155,7 @@ class PlayState extends FlxState
 	public static function playerDie(){
 		enemyGibs.at(player);
 		enemyGibs.start(true,2,0.2,40,10);
+		new FlxTimer(1.5, resetLevel);
 	}
 
 	private function setupPlayer():Void
@@ -177,6 +182,8 @@ class PlayState extends FlxState
 	private function setupLevel():Void
 	{
 		var levelName:String = "";
+
+		trace(Reg.level);
 
 		switch(Reg.level){
 			case 0:
@@ -210,12 +217,16 @@ class PlayState extends FlxState
 	private function setupCamera():Void
 	{
 		// cameraTarget = new FlxSprite(0,0);
-		FlxG.camera.follow(player, FlxCamera.STYLE_LOCKON, 7);
 		FlxG.camera.setBounds(0,0,level.level.width, level.level.height);
+		FlxG.camera.follow(player);
 	}
 
 	private function setupBg():Void
 	{
+		var moon = new FlxSprite(FlxG.width/2, FlxG.height/2, "assets/images/moon_sprite.png");
+		moon.scrollFactor.set(0.1,0.1);
+		add(moon);
+
 		bg = new FlxSprite(0, 0, "assets/images/cave_walls.png");
 		bg.scrollFactor.set(0.2,0.2);
 		add(bg);
@@ -250,6 +261,15 @@ class PlayState extends FlxState
 
 	public static function gotoNextLevel(){
         Reg.level++;
+        FlxG.camera.fade(FlxColor.BLACK, 0.2);
+        new FlxTimer(1, resetLevel);
+	}
+
+	public static function resetLevel(Timer:FlxTimer){
         FlxG.resetState();       
+	}
+
+	public function updateCameraFollow(Timer:FlxTimer){
+		FlxG.camera.follow(player, FlxCamera.STYLE_LOCKON, 10);
 	}
 }
