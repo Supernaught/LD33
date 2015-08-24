@@ -27,6 +27,7 @@ class PlayState extends FlxState
 	var enemyBullets:FlxTypedGroup<Bullet>;
 	var enemies:FlxTypedGroup<Enemy>;
 	public static var enemyGibs:FlxEmitter;
+	public static var redGibs:FlxEmitter;
 
 	public static var effects:FlxTypedGroup<WooshEffects>;
 
@@ -44,10 +45,11 @@ class PlayState extends FlxState
 		setupGibs();
 		setupBg();
 
-		FlxG.camera.bgColor = 0xff23173b;
+		FlxG.camera.bgColor = 0xff1d0d2c;
 
         add(level.level);
         add(enemyGibs);
+        add(redGibs);
 		add(player);
         add(bullets);
         add(enemyBullets);
@@ -119,7 +121,7 @@ class PlayState extends FlxState
 	{
 		Bullet.kill();
 
-		if(Enemy.takeDamage(1)){
+		if(Enemy.takeDamage(Bullet.damage)){
 			enemyGibs.at(Bullet);
 			enemyGibs.start(true,1,0,20,3);
 			// enemy gibs
@@ -149,7 +151,7 @@ class PlayState extends FlxState
         bullets = new FlxTypedGroup<Bullet>();
         bullets.maxSize = 50;
 
-		player = new Player(3 * 16, 18 * 16,bullets, effects);
+		player = new Player(0,0,bullets, effects);
 	}
 
 	private function setupEnemies():Void
@@ -199,7 +201,7 @@ class PlayState extends FlxState
 	private function setupBg():Void
 	{
 		bg = new FlxSprite(0, 0, "assets/images/cave_walls.png");
-		bg.scrollFactor.set(0.6,0.6);
+		bg.scrollFactor.set(0.1,0.1);
 		add(bg);
 	}
 
@@ -211,6 +213,14 @@ class PlayState extends FlxState
 		enemyGibs.setRotation( -360, 0);
 		enemyGibs.gravity = 350;
 		enemyGibs.bounce = 0.3;
-		enemyGibs.makeParticles(Reg.BLOOD_SPRITESHEET, 50, 20, true, 0.5);
+		enemyGibs.makeParticles(Reg.UNIT_GIBS_SPRITESHEET, 50, 20, true, 0.5);
+
+		redGibs = new FlxEmitter();
+		redGibs.setXSpeed( -100, 100);
+		redGibs.setYSpeed( -150, 0);
+		redGibs.setRotation( -360, 0);
+		redGibs.gravity = 350;
+		redGibs.bounce = 0.3;
+		redGibs.makeParticles(Reg.RED_GIBS_SPRITESHEET, 50, 20, true, 0.5);
 	}
 }
