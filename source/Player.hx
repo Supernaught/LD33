@@ -194,7 +194,7 @@ class Player extends Unit
     }
 
     public function jumpControls():Void{
-        if(isTouching(FlxObject.FLOOR) && canJumpDown() && FlxG.keys.pressed.DOWN && FlxG.keys.justPressed.Z){
+        if(isTouching(FlxObject.FLOOR) && canJumpDown() && FlxG.keys.pressed.DOWN){
             y += 5;
             canJump = false;
         } else if(unitType != Reg.UNIT_FLYING){
