@@ -12,6 +12,7 @@ class Reg
 	public static inline var PLAYER_SPRITESHEET = "assets/images/player_spritesheet.png";
 	public static inline var TANK_SPRITESHEET = "assets/images/tank_spritesheet.png";
 	public static inline var ARCHER_SPRITESHEET = "assets/images/archer_spritesheet.png";
+	public static inline var GARGOYLE_SPRITESHEET = "assets/images/gargoyle_spritesheet.png";
 	public static inline var DUST_SPRITESHEET = "assets/images/dust_spritesheet.png";
 	
 	// Physics
@@ -80,6 +81,13 @@ class Reg
 		Player.animation.add("jump", [12,13,14], 10);
 		Player.animation.add("aim_X", [15], 30, false);
 		Player.animation.add("aim_Y", [16], 30, false);
+	}
+
+	public static function getGargoyleAnim(Player:FlxSprite){
+		Player.loadGraphic(GARGOYLE_SPRITESHEET, true, 16,16);
+		Player.animation.add("fall", [0], 10);
+		Player.animation.add("fly", [2,3,2,0,1,], 10);
+		Player.animation.add("grounded", [4,5,6], 3);
 	}
 
 	public static function getSignPostAnim(Player:FlxSprite){
