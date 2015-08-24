@@ -28,9 +28,8 @@ class Level {
 		level.setTileProperties(23,FlxObject.NONE);
 
 		// dark bg tiles, controls
-		for(i in 68...108){
+		for(i in 68...120){
 			level.setTileProperties(i,FlxObject.NONE);
-			trace(i);
 		}
 
 		// crane things

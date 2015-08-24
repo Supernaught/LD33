@@ -191,6 +191,13 @@ class Player extends Unit
         } else {
             acceleration.x = 0;
         }
+
+        if(FlxG.keys.pressed.UP){
+            var tileId = PlayState.level.level.getTile(Math.round(x/Reg.T_WIDTH), Math.round(y/Reg.T_HEIGHT));
+            if(tileId == 113){
+                nextLevel();
+            }
+        }
     }
 
     public function jumpControls():Void{
@@ -403,5 +410,9 @@ class Player extends Unit
         if(tileAbove == 52 || tileAbove == 53 || tileAbove == 54 || tileBelow == 41 || tileBelow == 42 || tileBelow == 40){
             takeDamage();
         }       
+    }
+
+    private function nextLevel(){
+        PlayState.gotoNextLevel();
     }
 }

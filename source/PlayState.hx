@@ -183,7 +183,7 @@ class PlayState extends FlxState
 			levelName = Reg.LEVEL_INTRO;
 
 			case 1:
-			levelName = Reg.LEVEL1;
+			levelName = Reg.DRAFT_1;
 
 			case 2:
 			levelName = Reg.LEVEL2;
@@ -217,7 +217,7 @@ class PlayState extends FlxState
 	private function setupBg():Void
 	{
 		bg = new FlxSprite(0, 0, "assets/images/cave_walls.png");
-		bg.scrollFactor.set(0.1,0.1);
+		bg.scrollFactor.set(0.2,0.2);
 		add(bg);
 	}
 
@@ -246,5 +246,10 @@ class PlayState extends FlxState
 		whiteGibs.gravity = 350;
 		whiteGibs.bounce = 0.1;
 		whiteGibs.makeParticles(Reg.GIBS_SPRITESHEET, 50, 20, true, 0.5);
+	}
+
+	public static function gotoNextLevel(){
+        Reg.level++;
+        FlxG.resetState();       
 	}
 }
