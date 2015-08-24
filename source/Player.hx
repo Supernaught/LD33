@@ -25,7 +25,7 @@ class Player extends Unit
 
     // Attack stuff
     private var canAttack:Bool;
-    private var attackDelay:Float = 0.4;
+    private var attackDelay:Float = 0.5;
     private var attackDelayCounter:Float;
 
     private var aiming:Bool; // used for ranged attacks
@@ -43,6 +43,7 @@ class Player extends Unit
     public function new(X:Int, Y:Int, Bullets:FlxTypedGroup<Bullet>, Effects:FlxTypedGroup<WooshEffects>)
     {
         super(X,Y);
+        Reg.playerDamage = 1;
 
         // components = new Array<Component>();
         // components.push(new CanAttack(this));
@@ -89,6 +90,7 @@ class Player extends Unit
                 acceleration.x = 0;
             } else if(!canJump){
                 canJump = true;
+                Sounds.ground();
             }
 
             checkIfTouchingSpikes();
@@ -129,7 +131,7 @@ class Player extends Unit
         }
 
         if(FlxG.keys.pressed.ONE){
-            FlxG.sound.play("hit");
+            Sounds.hit();
 
             switchToUnit(Reg.UNIT_HUMAN);
         } 
@@ -159,10 +161,12 @@ class Player extends Unit
 
         switch(UnitType){
             case Reg.UNIT_HUMAN:
+            Reg.playerDamage = 1;
             Reg.getPlayerAnim(this);
             maxVelocity.set(maxSpeedX, maxSpeedY);
 
             case Reg.UNIT_TANK:
+            Reg.playerDamage = 3;
             maxVelocity.set(maxSpeedX * 0.8, maxSpeedY);
             Reg.getTankAnim(this);
 
@@ -170,10 +174,12 @@ class Player extends Unit
             Reg.getTankAnim(this);
 
             case Reg.UNIT_RANGED:
+            Reg.playerDamage = 1;
             maxVelocity.set(maxSpeedX * 1.2, maxVelocity.y);
             Reg.getArcherAnim(this);
 
             case Reg.UNIT_FLYING:
+            Reg.playerDamage = 3;
             Reg.getGargoyleAnim(this);
             acceleration.y = UnitStats.FLY_GRAVITY * 3;
             // Reg.getFlyingAnim(this);
@@ -236,6 +242,7 @@ class Player extends Unit
             createDust(x,y);
             velocity.y = -jumpForce;
             canJump = false;
+            Sounds.jump();
         }
     }
 
@@ -329,6 +336,7 @@ class Player extends Unit
 
                     bullets.recycle(RangedBullet).shoot(new FlxPoint(getGraphicMidpoint().x,getGraphicMidpoint().y), angle);
 
+                    Sounds.woosh();
                     aiming = false;
                     yAim = FlxObject.NONE;
                     xAim = FlxObject.NONE;
@@ -352,6 +360,8 @@ class Player extends Unit
 
     public function attack():Void
     {
+        Sounds.woosh();
+
         if(animation.getByName("attack") != null)
             animation.play("attack");
 
@@ -399,7 +409,13 @@ class Player extends Unit
     }
 
     public function canJumpDown():Bool{
-        return (getTileBelow(x-Reg.T_WIDTH) == 33 || getTileBelow(x) == 33 || getTileBelow(x+Reg.T_WIDTH) == 33);
+        for(i in 31...35){
+            if((getTileBelow(x-Reg.T_WIDTH) == i || getTileBelow(x) == i || getTileBelow(x+Reg.T_WIDTH) == i)){
+                return true;
+            }            
+        }
+
+        return false;
     }
 
     public function turnOffSlowMo(){

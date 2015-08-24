@@ -27,8 +27,8 @@ class EnemyArcher extends Enemy
 
         attackDelay = 1.2;
         canAttack = true;
-        width -= 8;
-        offset.set(4,0);
+        width -= 4;
+        offset.set(2,0);
     }
 
     override public function update():Void
@@ -73,5 +73,7 @@ class EnemyArcher extends Enemy
         enemyBullets.recycle(RangedBullet).shoot(new FlxPoint(x,y+4), angle);
 
         super.attack();
+
+        Sounds.woosh();
     }
 }

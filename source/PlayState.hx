@@ -134,7 +134,7 @@ class PlayState extends FlxState
 	{
 		Bullet.kill();
 
-		if(Enemy.takeDamage(Bullet.damage)){
+		if(Enemy.takeDamage(Reg.playerDamage)){
 			enemyGibs.at(Bullet);
 			enemyGibs.start(true,1,0,20,3);
 		}
@@ -155,6 +155,7 @@ class PlayState extends FlxState
 	public static function playerDie(){
 		enemyGibs.at(player);
 		enemyGibs.start(true,2,0.2,40,10);
+		Sounds.player_die();
 		new FlxTimer(1.5, resetLevel);
 	}
 
@@ -182,8 +183,6 @@ class PlayState extends FlxState
 	private function setupLevel():Void
 	{
 		var levelName:String = "";
-
-		trace(Reg.level);
 
 		switch(Reg.level){
 			case 0:

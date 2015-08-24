@@ -20,8 +20,8 @@ class EnemyTank extends EnemyWalking
         animation.play("idle");
         unitType = Reg.UNIT_TANK;
         
-        width -= 8;
-        offset.set(4,0);
+        width -= 4;
+        offset.set(2,0);
     }
 
     override public function update():Void

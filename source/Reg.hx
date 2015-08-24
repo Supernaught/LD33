@@ -35,6 +35,7 @@ class Reg
 	public static var scores:Array<Dynamic> = [];
 	public static var score:Int = 0;
 	public static var saves:Array<FlxSave> = [];
+	public static var playerDamage:Int;
 
 	// Unit Type
 	public static inline var UNIT_HUMAN:Int = 0;

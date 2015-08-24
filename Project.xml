@@ -32,12 +32,15 @@
 
 	<assets path="assets"/>
 
-	<assets path="assets/sounds" if="flash">
-    	<sound path="hit.mp3" id="hit" />
-	</assets>
-
-	<assets path="assets/sounds" unless="flash">
-    	<sound path="hit.ogg" id="hit" />
+	<assets path="assets/sounds">
+    	<sound path="hit.wav" id="hit" />
+    	<sound path="hit2.wav" id="hit2" />
+    	<sound path="enemy_die.wav" id="enemy_die" />
+    	<sound path="player_die.wav" id="player_die" />
+    	<sound path="woosh.wav" id="woosh" />
+    	<sound path="jump.wav" id="jump" />
+    	<sound path="ground.wav" id="ground" />
+    	<sound path="shoot.wav" id="shoot" />
 	</assets>
 	
 	<!--------------------------------LIBRARIES------------------------------------->

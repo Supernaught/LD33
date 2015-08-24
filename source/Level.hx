@@ -30,7 +30,6 @@ class Level {
 		// dark bg tiles, controls
 		for(i in 68...108){
 			level.setTileProperties(i,FlxObject.NONE);
-			trace(i);
 		}
 		for(i in 68...120){
 			level.setTileProperties(i,FlxObject.NONE);

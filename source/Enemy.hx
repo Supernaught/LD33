@@ -68,10 +68,14 @@ class Enemy extends Unit
             return true;
         }
 
+        Sounds.hit2();
+
         return false;
     }
 
     public function die():Void{
+        Sounds.enemy_die();
+
         FlxG.camera.shake(0.015,0.2);
         PlayState.player.switchToUnit(unitType);
     	super.kill();
