@@ -67,7 +67,7 @@ class Player extends Unit
         isMeleeAttacking = false;
 
         // Physics and movement stuff
-        acceleration.y = maxSpeedY * Reg.GRAVITY;
+        acceleration.y = UnitStats.DEFAULT_GRAVITY;
         maxVelocity.set(maxSpeedX, maxSpeedY);
         drag.x = movespeed;
 
@@ -88,12 +88,17 @@ class Player extends Unit
 
     override public function update():Void
     {
-        if(!canJump && isTouching(FlxObject.FLOOR)){
-            canJump = true;
+        if(isTouching(FlxObject.FLOOR)){
+            if(unitType == Reg.UNIT_FLYING){
+                acceleration.x = 0;
+            } else if(!canJump){
+                canJump = true;
+            }
         }
         
         forDebug();
         movementControls();
+        jumpControls();
         attackControls();
 
         attackUpdate();
@@ -105,15 +110,6 @@ class Player extends Unit
     override public function destroy():Void
     {
         super.destroy();
-    }
-
-    public function jump():Void
-    {
-        createDust(x,y);
-        if(canJump){
-            velocity.y = -jumpForce;
-            canJump = false;
-        }
     }
 
     public function forDebug():Void
@@ -131,6 +127,7 @@ class Player extends Unit
 
     public function switchToUnit(UnitType:Int){
         unitType = UnitType;
+        acceleration.y = UnitStats.DEFAULT_GRAVITY;
 
         trace(unitType);
 
@@ -139,27 +136,31 @@ class Player extends Unit
             Reg.getPlayerAnim(this);
 
             case Reg.UNIT_TANK:
-            trace("tank");
             Reg.getTankAnim(this);
 
             case Reg.UNIT_MELEE:
             Reg.getTankAnim(this);
 
             case Reg.UNIT_RANGED:
-            trace("ranged");
+            Reg.getArcherAnim(this);
+
+            case Reg.UNIT_FLYING:
+            trace("flying");
+            acceleration.y = UnitStats.FLY_GRAVITY * 4;
+            // Reg.getFlyingAnim(this);
         }
     }
 
     public function movementControls():Void 
     {      
         if((FlxG.keys.pressed.A || FlxG.keys.pressed.LEFT)){
-            if(!aiming && canAttack){
+            if(canWalk()){
                 acceleration.x = -drag.x;
             }
 
             facing = FlxObject.LEFT;
         } else if(FlxG.keys.pressed.D || FlxG.keys.pressed.RIGHT){
-            if(!aiming && canAttack){
+            if(canWalk()){
                 acceleration.x = drag.x;
             }            
 
@@ -167,22 +168,46 @@ class Player extends Unit
         } else {
             acceleration.x = 0;
         }
+    }
 
-        if(FlxG.keys.pressed.W || FlxG.keys.pressed.Z){
-            if(canJump){
-                jump();
-            }
-            else {
-                acceleration.y = maxSpeedY * Reg.GRAVITY/2;
+    public function jumpControls():Void{
+        if(unitType != Reg.UNIT_FLYING){
+            if(FlxG.keys.pressed.W || FlxG.keys.pressed.Z){
+                if(canJump){
+                    jump();
+                }
+                else {
+                    acceleration.y = maxSpeedY * Reg.GRAVITY/2;
+                }
+            } else{
+                acceleration.y = maxSpeedY * Reg.GRAVITY;
             }
         } else {
-            acceleration.y = maxSpeedY * Reg.GRAVITY;
+            if(FlxG.keys.justPressed.Z){
+                hover();
+            }
+        }
+    }
+
+    public function hover():Void
+    {
+        velocity.y = -UnitStats.FLY_HOVER_FORCE * 4;
+    }
+
+    public function jump():Void
+    {
+        if(canJump){
+            createDust(x,y);
+            velocity.y = -jumpForce;
+            canJump = false;
         }
     }
 
     public function animationUpdate():Void{
         if(canAttack){
-            if(velocity.y < 0){
+            if(aiming && animation.getByName("aim_X") != null){
+                animation.play("aim_X");
+            } else if(velocity.y < 0){
                 animation.play("jump");
             } else if(velocity.y > 0){
                 animation.play("fall");
@@ -199,7 +224,7 @@ class Player extends Unit
     {
         if(canAttack)
         {
-            if((unitType == Reg.UNIT_HUMAN || unitType == Reg.UNIT_TANK) && (FlxG.mouse.justPressed || FlxG.keys.pressed.X)){
+            if((unitType == Reg.UNIT_HUMAN || unitType == Reg.UNIT_TANK || unitType == Reg.UNIT_FLYING) && (FlxG.mouse.justPressed || FlxG.keys.pressed.X)){
                 attack();
             }
             else if(unitType == Reg.UNIT_RANGED){
@@ -281,23 +306,28 @@ class Player extends Unit
 
     public function attack():Void
     {
-        animation.play("attack");
+        if(animation.getByName("attack") != null)
+            animation.play("attack");
 
         canAttack = false;
 
-        // Fire a bullet
+        // Ranged
         if(unitType == Reg.UNIT_RANGED){
             var angle = (facing == FlxObject.LEFT) ? -90 : 90;           
             bullets.recycle(RangedBullet).shoot(new FlxPoint(x,y), angle);
-        }
-
-        // Attack melee
-        if(unitType == Reg.UNIT_MELEE || unitType == Reg.UNIT_HUMAN || unitType == Reg.UNIT_TANK){
+        } 
+        // Melee
+        else if(unitType == Reg.UNIT_MELEE || unitType == Reg.UNIT_HUMAN || unitType == Reg.UNIT_TANK){
             acceleration.x = 0;
             isMeleeAttacking = true;
             meleeAttackFrameCounter = MELEE_ATTACK_FRAMES;
             var offset = (facing == FlxObject.LEFT) ? -16 : 16;
             bullets.recycle(MeleeBullet).shoot(new FlxPoint(getGraphicMidpoint().x + offset, getGraphicMidpoint().y - 2), 0);
+        }
+        // Flying
+        else if(unitType == Reg.UNIT_FLYING){
+            trace("attack fly");
+            bullets.recycle(RangedBullet).shoot(new FlxPoint(getGraphicMidpoint().x, y), 180);            
         }
     }
 
@@ -307,6 +337,10 @@ class Player extends Unit
     }
 
     public function createDust(X:Float, Y:Float):Void{
-        effects.add(new Dust(X,Y,Reg.JUMP_DUST));
+        effects.recycle(Dust).createEffect(X,Y,Reg.JUMP_DUST);
+    }
+
+    public function canWalk():Bool{
+        return !aiming && canAttack && (unitType == Reg.UNIT_FLYING ? ((velocity.y != 0) ? true : false) : true);
     }
 }

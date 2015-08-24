@@ -4,13 +4,21 @@ import flixel.tile.FlxTilemap;
 import openfl.Assets;
 import flixel.FlxObject;
 import flixel.tile.FlxTile;
+import flixel.group.FlxTypedGroup;
+import Class;
 
 class Level {
 	public var level:FlxTilemap;
 
-	public function new(LevelName:String, enemies){
+	private var enemyBullets:FlxTypedGroup<Bullet>;
+	private var player:Player;
+
+	public function new(LevelName:String, Enemies:FlxTypedGroup<Enemy>, EnemyBullets:FlxTypedGroup<Bullet>, Player:Player){
 		level = new FlxTilemap();
 		level.loadMap(Assets.getText(LevelName), "assets/images/ld33_tilesheet.png", Reg.T_WIDTH, Reg.T_HEIGHT, null,null,0);
+
+		enemyBullets = EnemyBullets;
+		player = Player;
 
 		// tile #2 = collide from up only
 		level.setTileProperties(0,FlxObject.ANY);
@@ -29,16 +37,24 @@ class Level {
 		level.setTileProperties(39,FlxObject.NONE);
 
 
-		// enemies.add(new Enemy(0,0));
-		if(enemies != null){
-			enemies.add(new EnemyTank(256,128));
+		Enemies.recycle(Enemy);
+		if(Enemies != null){
+			Enemies.recycle(EnemyTank).init(256, 128, EnemyBullets, Player);
+			Enemies.recycle(EnemyArcher).init(220, 60, EnemyBullets, Player);
+			Enemies.recycle(EnemyFlying).init(240, 30, EnemyBullets, Player);
+
+			addEnemyOnTileCoords(22,8, EnemyArcher, Enemies);
 		}
-		// enemies.add(new EnemyArcher(230,128));
+		// Enemies.add(new EnemyArcher(230,128));
 
 		// if(level.getTileCoords(55, false) != null){
 		// 	for(point in level.getTileCoords(55, false)){
-		// 		enemies.add(new Enemy(point.x, point.y));
+		// 		Enemies.add(new Enemy(point.x, point.y));
 		// 	}
 		// }
+	}
+
+	public function addEnemyOnTileCoords(XTile:Int, YTile:Int, Type:Class<Enemy>, Enemies:FlxTypedGroup<Enemy>){
+		Enemies.recycle(Type).init(XTile * 16, YTile * 16, enemyBullets, player);
 	}
 }

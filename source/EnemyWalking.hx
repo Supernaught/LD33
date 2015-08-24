@@ -7,12 +7,12 @@ import flixel.util.FlxColor;
 
 class EnemyWalking extends Enemy
 {
-    public function new(X:Float, Y:Float)
+    public function new()
     {
         hp = 3;
         movespeed = 1000;
         
-        super(X,Y);
+        super();
         
         maxSpeedX = 50;
         drag.x = movespeed;

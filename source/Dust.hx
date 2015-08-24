@@ -5,14 +5,9 @@ import flixel.FlxG;
 
 class Dust extends FlxSprite
 {
-    public function new(X:Float, Y:Float, Type:String)
+    public function new()
     {
-        super(X,Y);
-        switch(Type){
-            case Reg.JUMP_DUST:
-            Reg.getDustEffect(this);
-            animation.play("jumpDust");
-        }
+        super();
     }
 
     override public function update():Void
@@ -20,12 +15,23 @@ class Dust extends FlxSprite
         super.update();
 
         if(animation.finished){
-            destroy();
+            kill();
         }
     }
 
     override public function destroy():Void
     {
         super.destroy();
+    }
+
+    public function createEffect(X:Float, Y:Float, Type:String){
+        x = X;
+        y = Y;
+        
+        switch(Type){
+            case Reg.JUMP_DUST:
+            Reg.getDustEffect(this);
+            animation.play("jumpDust");
+        }
     }
 }

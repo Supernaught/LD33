@@ -7,9 +7,9 @@ import flixel.util.FlxColor;
 
 class EnemyTank extends EnemyWalking
 {
-    public function new(X:Float, Y:Float)
+    public function new()
     {
-        super(X,Y);
+        super();
         
         hp = 1;
         facing = FlxObject.LEFT;

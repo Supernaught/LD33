@@ -33,6 +33,7 @@ class Reg
 	public static inline var UNIT_MELEE:Int = 1;
 	public static inline var UNIT_RANGED:Int = 2;
 	public static inline var UNIT_TANK:Int = 3;
+	public static inline var UNIT_FLYING:Int = 4;
 
 	// Dust Effect Types
 	public static inline var JUMP_DUST:String = "JUMP_DUST";
@@ -55,7 +56,7 @@ class Reg
 		// Player.animation.add("playerJump", [13,14], 10);
 		// Player.animation.add("playerAttack", [8,8,8,9,10,11,12], 15);
 
-		Player.loadGraphic(ARCHER_SPRITESHEET, true, 16,16);
+		Player.loadGraphic(PLAYER_SPRITESHEET, true, 16,16);
 		Player.animation.add("idle", [0,1,2,3], 10);
 		Player.animation.add("run", [4,5,6,7,8,7,6,5], 18);
 		Player.animation.add("fall", [9,10,11], 13);
@@ -68,7 +69,7 @@ class Reg
 		Player.animation.add("run", [3,4,5,6,7], 8);
 		Player.animation.add("fall", [15,16], 10);
 		Player.animation.add("jump", [13,14], 10);
-		Player.animation.add("attack", [8,9,10,11,12], 30, false);
+		Player.animation.add("attack", [8,8,8,9,10,11,12], 30, false);
 	}
 
 	public static function getArcherAnim(Player:FlxSprite){
@@ -91,5 +92,5 @@ class Reg
 		Sprite.animation.add("jumpDust", [0,1,2,3], 20, false);
 	}
 
-
+	
 }

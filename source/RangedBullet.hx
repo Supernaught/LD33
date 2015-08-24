@@ -20,7 +20,7 @@ class RangedBullet extends Bullet
         speed = 400;
 
         acceleration.y = 200;
-        acceleration.x = -100;
+        drag.x = 10;
     }
 
     override public function update():Void
