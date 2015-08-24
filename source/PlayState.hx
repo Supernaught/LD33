@@ -246,13 +246,10 @@ class PlayState extends FlxState
 		whiteGibs.gravity = 350;
 		whiteGibs.bounce = 0.1;
 		whiteGibs.makeParticles(Reg.GIBS_SPRITESHEET, 50, 20, true, 0.5);
-<<<<<<< HEAD
-=======
 	}
 
 	public static function gotoNextLevel(){
         Reg.level++;
         FlxG.resetState();       
->>>>>>> e96f43c826b255584c4f95361d3c03fdaf8850bd
 	}
 }
