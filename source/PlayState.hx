@@ -28,6 +28,7 @@ class PlayState extends FlxState
 	var enemies:FlxTypedGroup<Enemy>;
 	public static var enemyGibs:FlxEmitter;
 	public static var redGibs:FlxEmitter;
+	public static var whiteGibs:FlxEmitter;
 
 	public static var effects:FlxTypedGroup<WooshEffects>;
 
@@ -50,6 +51,7 @@ class PlayState extends FlxState
         add(level.level);
         add(enemyGibs);
         add(redGibs);
+        add(whiteGibs);
 		add(player);
         add(bullets);
         add(enemyBullets);
@@ -84,6 +86,7 @@ class PlayState extends FlxState
 		FlxG.collide(bullets, level.level, onCollision);
 		FlxG.collide(enemyBullets, level.level, onCollision);
 		FlxG.collide(enemyGibs, level.level, onCollision);
+		FlxG.collide(whiteGibs, level.level, onCollision);
 		FlxG.collide(enemies, level.level, onCollision);
 		FlxG.collide(enemies, enemies);
 		FlxG.collide(player, level.level, playerLevelCollision);
@@ -108,6 +111,11 @@ class PlayState extends FlxState
 		// Bullet collide with level
 		if(Std.is(Object1, Bullet)){
 			Object1.kill();
+
+			if(Std.is(Object1, RangedBullet) || Std.is(Object1, BombBullet)){
+				whiteGibs.at(Object1);
+				whiteGibs.start(true,1,0,5,3);
+			}
 		}
 	}
 
@@ -125,8 +133,10 @@ class PlayState extends FlxState
 		if(Enemy.takeDamage(Bullet.damage)){
 			enemyGibs.at(Bullet);
 			enemyGibs.start(true,1,0,20,3);
-			// enemy gibs
-			// camera shake
+		}
+		if(Std.is(Bullet, RangedBullet) || Std.is(Bullet, BombBullet)){
+			whiteGibs.at(Bullet);
+			whiteGibs.start(true,1,0,5,3);
 		}
 	}
 
@@ -170,7 +180,7 @@ class PlayState extends FlxState
 
 		switch(Reg.level){
 			case 0:
-			levelName = Reg.DRAFT_1;
+			levelName = Reg.LEVEL_INTRO;
 
 			case 1:
 			levelName = Reg.LEVEL1;
@@ -228,5 +238,13 @@ class PlayState extends FlxState
 		redGibs.gravity = 350;
 		redGibs.bounce = 0.3;
 		redGibs.makeParticles(Reg.RED_GIBS_SPRITESHEET, 50, 20, true, 0.5);
+
+		whiteGibs = new FlxEmitter();
+		whiteGibs.setXSpeed( -50, 50);
+		whiteGibs.setYSpeed( -50, 0);
+		whiteGibs.setRotation( -360, 0);
+		whiteGibs.gravity = 350;
+		whiteGibs.bounce = 0.1;
+		whiteGibs.makeParticles(Reg.GIBS_SPRITESHEET, 50, 20, true, 0.5);
 	}
 }
