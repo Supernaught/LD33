@@ -13,7 +13,7 @@ class EnemyTank extends EnemyWalking
     {
         super();
         
-        hp = 1;
+        hp = 2;
         facing = FlxObject.LEFT;
 
         Reg.getTankAnim(this);

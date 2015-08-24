@@ -8,6 +8,8 @@ import flixel.util.FlxVelocity;
 
 class Bullet extends FlxSprite
 {
+	public var damage:Int = 1;
+
     public function new()
     {
         super();

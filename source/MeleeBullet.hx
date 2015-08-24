@@ -16,6 +16,8 @@ class MeleeBullet extends Bullet
     {
         super();
 
+        damage = 2;
+
         new FlxTimer(0.05, destroyBullet, 1);
 
         makeGraphic(24,30, 0x00000000);

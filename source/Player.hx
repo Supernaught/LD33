@@ -9,7 +9,7 @@ import flixel.group.FlxTypedGroup;
 
 class Player extends Unit
 {
-    private static var ATTACK_COOLDOWN:Float = 1; // in seconds
+    private static var ATTACK_COOLDOWN:Float = 0.1; // in milliseconds
 
     private var unitType:Int = Reg.UNIT_HUMAN;
 
@@ -112,20 +112,32 @@ class Player extends Unit
 
     public function forDebug():Void
     {
-        if(FlxG.keys.pressed.ONE){
-            Reg.level++;
-            FlxG.resetState();
-        } 
-
         // if(FlxG.keys.pressed.ONE){
-        //     switchToUnit(Reg.UNIT_HUMAN);
+        //     Reg.level++;
+        //     FlxG.resetState();
         // } 
-        // if(FlxG.keys.pressed.TWO){
-        //     switchToUnit(Reg.UNIT_MELEE);
-        // } 
-        // if(FlxG.keys.pressed.THREE){
-        //     switchToUnit(Reg.UNIT_RANGED);
-        // } 
+
+        if(FlxG.keys.pressed.Q){
+            Reg.level = 10;
+            FlxG.resetState();
+        }
+        if(FlxG.keys.pressed.W){
+            Reg.level = 11;
+            FlxG.resetState();
+        }
+
+        if(FlxG.keys.pressed.ONE){
+            switchToUnit(Reg.UNIT_HUMAN);
+        } 
+        if(FlxG.keys.pressed.TWO){
+            switchToUnit(Reg.UNIT_TANK);
+        } 
+        if(FlxG.keys.pressed.THREE){
+            switchToUnit(Reg.UNIT_RANGED);
+        } 
+        if(FlxG.keys.pressed.FOUR){
+            switchToUnit(Reg.UNIT_FLYING);
+        } 
     }
 
     public function switchToUnit(UnitType:Int){
@@ -141,7 +153,7 @@ class Player extends Unit
         acceleration.y = UnitStats.DEFAULT_GRAVITY;
         maxVelocity.set(maxSpeedX, maxSpeedY);
 
-        trace(unitType);
+        // trace(unitType);
 
         switch(UnitType){
             case Reg.UNIT_HUMAN:
@@ -149,7 +161,7 @@ class Player extends Unit
             maxVelocity.set(maxSpeedX, maxSpeedY);
 
             case Reg.UNIT_TANK:
-            maxVelocity.set(maxSpeedX * 0.85, maxSpeedY);
+            maxVelocity.set(maxSpeedX * 0.8, maxSpeedY);
             Reg.getTankAnim(this);
 
             case Reg.UNIT_MELEE:
@@ -259,7 +271,7 @@ class Player extends Unit
     {
         if(canAttack)
         {
-            if((unitType == Reg.UNIT_HUMAN || unitType == Reg.UNIT_TANK || unitType == Reg.UNIT_FLYING) && (FlxG.mouse.justPressed || FlxG.keys.pressed.X)){
+            if((unitType == Reg.UNIT_HUMAN || unitType == Reg.UNIT_TANK || unitType == Reg.UNIT_FLYING) && (FlxG.mouse.justPressed || FlxG.keys.justPressed.X)){
                 attack();
             }
             else if(unitType == Reg.UNIT_RANGED){
@@ -288,8 +300,6 @@ class Player extends Unit
                     // }
 
                 } else if(aiming && FlxG.keys.justReleased.X){
-                    trace(xAim + " " + yAim);
-
                     var angle = 90;
 
                     if(yAim != 0){
@@ -347,7 +357,6 @@ class Player extends Unit
         }
         // Flying
         else if(unitType == Reg.UNIT_FLYING){
-            trace("attack fly");
             bullets.recycle(BombBullet).shoot(new FlxPoint(getGraphicMidpoint().x, y), 180);
         }
     }
@@ -368,6 +377,7 @@ class Player extends Unit
     }
 
     public function createSmashEffect(X:Float, Y:Float):Void{
+        trace(facing);
         effects.recycle(WooshEffects).createEffect(X,Y,Reg.ATTACK_WOOSH, facing);
     }
 

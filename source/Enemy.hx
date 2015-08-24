@@ -61,17 +61,18 @@ class Enemy extends Unit
     public function takeDamage(Damage:Int):Bool{
     	hp -= Damage;
 		FlxSpriteUtil.flicker(this, 0.2, 0.02, true);
+        FlxG.camera.shake(0.01,0.1);
 
-    	if(hp <= 0){
-    		die();
-    		return true;
-    	}
+        if(hp <= 0){
+            die();
+            return true;
+        }
 
-    	return false;
+        return false;
     }
 
     public function die():Void{
-        FlxG.camera.shake(0.01,0.2);
+        FlxG.camera.shake(0.015,0.2);
         PlayState.player.switchToUnit(unitType);
     	super.kill();
     }

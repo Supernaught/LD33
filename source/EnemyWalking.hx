@@ -16,7 +16,7 @@ class EnemyWalking extends Enemy
         
         maxSpeedX = 50;
         drag.x = movespeed;
-        acceleration.x = (facing == FlxObject.RIGHT ) ? movespeed : -movespeed;
+        // acceleration.x = (facing == FlxObject.RIGHT ) ? movespeed : -movespeed;
 
         facing = FlxObject.RIGHT;
         makeGraphic(Reg.T_WIDTH, Reg.T_HEIGHT, FlxColor.MAGENTA);

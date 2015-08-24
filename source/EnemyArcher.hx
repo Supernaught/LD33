@@ -12,7 +12,7 @@ class EnemyArcher extends Enemy
 {
     var range:Int = 150;
     var aiming:Bool = false;
-    var aimDuration:Float = 0.4;
+    var aimDuration:Float = 0.7;
 
     public function new()
     {
@@ -25,7 +25,7 @@ class EnemyArcher extends Enemy
         Reg.getArcherAnim(this);
         animation.play("idle");
 
-        attackDelay = 1.5;
+        attackDelay = 1.2;
         canAttack = true;
     }
 

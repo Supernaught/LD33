@@ -15,7 +15,8 @@ class Reg
 	public static inline var GARGOYLE_SPRITESHEET = "assets/images/gargoyle_spritesheet.png";
 	
 	public static inline var SMASH_SPRITESHEET = "assets/images/tanksmash_spritesheet.png";
-	public static inline var BLOOD_SPRITESHEET = "assets/images/meatparticles_spritesheet.png";
+	public static inline var UNIT_GIBS_SPRITESHEET = "assets/images/unit_gibs_spritesheet.png";
+	public static inline var RED_GIBS_SPRITESHEET = "assets/images/red_gibs_spritesheet.png";
 	public static inline var DUST_SPRITESHEET = "assets/images/dust_spritesheet.png";
 	public static inline var ARROW_SPRITE = "assets/images/arrow_sprite.png";
 	public static inline var MOON_SPRITE = "assets/images/moon_sprite.png";
@@ -53,6 +54,14 @@ class Reg
 	public static inline var LEVEL2:String = "assets/data/level2.csv";
 	public static inline var LEVEL3:String = "assets/data/level3.csv";
 
+	public static inline var DRAFT_1:String = "assets/data/alfonz1_draft.csv";
+	public static inline var DRAFT_2:String = "assets/data/alfonz2_draft.csv";
+
+	// Tilesheet Tile IDs
+	public static inline var TILE_ID_PLAYER:Int = 60;
+	public static inline var TILE_ID_TANK:Int = 61;
+	public static inline var TILE_ID_ARCHER:Int = 62;
+	public static inline var TILE_ID_GARGOYLE:Int = 63;
 
 	public static function getPlayerAnim(Player:FlxSprite){
 		Player.loadGraphic(PLAYER_SPRITESHEET, true, 16,16);
