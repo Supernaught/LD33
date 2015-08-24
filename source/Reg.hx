@@ -88,7 +88,7 @@ class Reg
 
 	public static function getDustEffect(Sprite:FlxSprite){
 		Sprite.loadGraphic(DUST_SPRITESHEET, true, 16,16);
-		Sprite.animation.add("jumpDust", [0,1,2,3], 20, false);
+		Sprite.animation.add("jumpDust", [0,1,2,3], 25, false);
 	}
 
 
