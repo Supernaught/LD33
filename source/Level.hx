@@ -37,13 +37,13 @@ class Level {
 		level.setTileProperties(39,FlxObject.NONE);
 
 
-		Enemies.recycle(Enemy);
+		Enemies.recycle(Enemy).destroy();
 		if(Enemies != null){
-			Enemies.recycle(EnemyTank).init(256, 128, EnemyBullets, Player);
-			Enemies.recycle(EnemyArcher).init(220, 60, EnemyBullets, Player);
-			Enemies.recycle(EnemyFlying).init(240, 30, EnemyBullets, Player);
+			Enemies.recycle(EnemyTank).init(256, 128+240, EnemyBullets, Player);
+			Enemies.recycle(EnemyArcher).init(220, 300, EnemyBullets, Player);
+			Enemies.recycle(EnemyFlying).init(240, 540, EnemyBullets, Player);
 
-			addEnemyOnTileCoords(22,8, EnemyArcher, Enemies);
+			addEnemyOnTileCoords(22,23, EnemyArcher, Enemies);
 		}
 		// Enemies.add(new EnemyArcher(230,128));
 

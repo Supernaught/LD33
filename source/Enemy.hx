@@ -36,11 +36,15 @@ class Enemy extends Unit
         setFacingFlip(FlxObject.RIGHT, false, false);
 
         maxVelocity.set(maxSpeedX, maxSpeedY);
+
+        canAttack = true;
     }
 
     override public function update():Void
     {
         super.update();
+
+        facing = (player.x > x) ? FlxObject.RIGHT : FlxObject.LEFT;
     }
 
     public function init(X:Float, Y:Float, EnemyBullets:FlxTypedGroup<Bullet>, Player:Player):Void{
@@ -78,7 +82,8 @@ class Enemy extends Unit
     }
 
     public function enableAttack(Timer:FlxTimer):Void{
-        canAttack = true;
+        if(player.alive)
+            canAttack = true;
     }
 
     public function getXDistanceFromPlayer():Float{

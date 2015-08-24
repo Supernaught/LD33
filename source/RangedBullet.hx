@@ -15,7 +15,11 @@ class RangedBullet extends Bullet
     {
         super();
 
-        makeGraphic(6, 14, FlxColor.WHITE);
+        // makeGraphic(6, 14, FlxColor.WHITE);
+        loadGraphic(Reg.ARROW_SPRITE);
+        offset.set(0,6);
+        height = 3;
+        width = 10;
 
         speed = 400;
 
@@ -33,12 +37,19 @@ class RangedBullet extends Bullet
         super.destroy();
     }
 
-    public override function shoot(Pos:FlxPoint, Angle:Float):Void{
+    override public function shoot(Pos:FlxPoint, Angle:Float):Bullet{
         super.reset(Pos.x - width / 2, Pos.y - height / 2);
 
         angle = Angle;
         angularVelocity = (angle > 0) ? 5 : -5;
         angularAcceleration = angularVelocity * 2;
         velocity = FlxVelocity.velocityFromAngle(angle - 90, speed);
+
+        return this;
+    }
+
+    override public function setSpeed(X:Float = null, Y:Float = null):Void{
+    	velocity.x = (X != null) ? X : acceleration.x;
+    	velocity.y = (Y != null) ? Y : acceleration.y;
     }
 }

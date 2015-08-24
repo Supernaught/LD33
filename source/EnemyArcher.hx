@@ -6,10 +6,13 @@ import flixel.FlxObject;
 import flixel.util.FlxColor;
 import flixel.util.FlxPoint;
 import flixel.group.FlxTypedGroup;
+import flixel.util.FlxTimer;
 
 class EnemyArcher extends Enemy
 {
     var range:Int = 150;
+    var aiming:Bool = false;
+    var aimDuration:Float = 0.4;
 
     public function new()
     {
@@ -22,7 +25,8 @@ class EnemyArcher extends Enemy
         Reg.getArcherAnim(this);
         animation.play("idle");
 
-        attackDelay = 1;
+        attackDelay = 1.5;
+        canAttack = true;
     }
 
     override public function update():Void
@@ -30,11 +34,15 @@ class EnemyArcher extends Enemy
         super.update();
 
         if(isPlayerWithinRange(range,range/3)){
-            if(canAttack){
-                attack();
+            if(!aiming && canAttack){
+                aim();
             }
+        }
 
-            facing = (player.x > x) ? FlxObject.RIGHT : FlxObject.LEFT;
+        if(aiming){
+            animation.play("aim_X");
+        } else{
+            animation.play("idle");
         }
     }
 
@@ -46,9 +54,21 @@ class EnemyArcher extends Enemy
         super.die();
     }
 
+    public function aim():Void{
+        aiming = true;
+        new FlxTimer(aimDuration, timedAttackCallback);
+    }    
+
+    public function timedAttackCallback(Timer:FlxTimer){
+    	if(alive)
+        	attack();
+    }
+
     override public function attack():Void{
+        aiming = false;
+
         var angle = (facing == FlxObject.LEFT) ? -90 : 90;           
-        enemyBullets.recycle(RangedBullet).shoot(new FlxPoint(x,y), angle);
+        enemyBullets.recycle(RangedBullet).shoot(new FlxPoint(x,y+4), angle);
 
         super.attack();
     }

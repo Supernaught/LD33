@@ -7,6 +7,8 @@ import flixel.util.FlxColor;
 
 class EnemyTank extends EnemyWalking
 {
+    var detectRange:Float = 100;
+
     public function new()
     {
         super();
@@ -21,6 +23,10 @@ class EnemyTank extends EnemyWalking
 
     override public function update():Void
     {
+        if(getXDistanceFromPlayer() < detectRange){
+            // acceleration.x = 
+        }
+
         super.update();
     }
 

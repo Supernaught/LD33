@@ -9,7 +9,7 @@ import flixel.group.FlxTypedGroup;
 
 class Player extends Unit
 {
-    private static var ATTACK_COOLDOWN:Float = 0.1; // in milliseconds
+    private static var ATTACK_COOLDOWN:Float = 1; // in seconds
 
     private var unitType:Int = Reg.UNIT_HUMAN;
 
@@ -29,20 +29,16 @@ class Player extends Unit
     private var attackDelayCounter:Float;
 
     private var aiming:Bool; // used for ranged attacks
-    private var xAim:Int;
-    private var yAim:Int;
+    private var xAim:Int = 0;
+    private var yAim:Int = 0;
 
     private var bullets:FlxTypedGroup<Bullet>;
-    private var effects:FlxTypedGroup<Dust>;
+    private var effects:FlxTypedGroup<WooshEffects>;
     
-    private var MELEE_ATTACK_FRAMES:Int = 2; // used for melee attack hit "bullet"    
-    private var meleeAttackFrameCounter:Int;
-    private var isMeleeAttacking:Bool;
-
     // Components
     private var canAttackComponent:CanAttack;
 
-    public function new(X:Int, Y:Int, Bullets:FlxTypedGroup<Bullet>, Effects:FlxTypedGroup<Dust>)
+    public function new(X:Int, Y:Int, Bullets:FlxTypedGroup<Bullet>, Effects:FlxTypedGroup<WooshEffects>)
     {
         super(X,Y);
 
@@ -52,8 +48,8 @@ class Player extends Unit
         // Animation sprites stuff
         makeGraphic(Reg.T_WIDTH, Reg.T_HEIGHT, 0xffc71045);
 
-        var yOffset = 4;
-        var xOffset = 2;
+        var yOffset = 6;
+        var xOffset = 4;
 
         width -= xOffset;
         height -= yOffset;
@@ -63,15 +59,13 @@ class Player extends Unit
         // Attack stuff
         canAttack = false;
         bullets = Bullets;
-        meleeAttackFrameCounter = 0;
-        isMeleeAttacking = false;
 
         // Physics and movement stuff
         acceleration.y = UnitStats.DEFAULT_GRAVITY;
         maxVelocity.set(maxSpeedX, maxSpeedY);
         drag.x = movespeed;
 
-        // Jump stuff
+        // Move stuff
         canJump = true;
 
         canAttackComponent = new CanAttack(this);
@@ -94,6 +88,10 @@ class Player extends Unit
             } else if(!canJump){
                 canJump = true;
             }
+
+            checkIfTouchingSpikes();
+        } else if(isTouching(FlxObject.CEILING)){
+            checkIfTouchingSpikes();
         }
         
         forDebug();
@@ -115,38 +113,55 @@ class Player extends Unit
     public function forDebug():Void
     {
         if(FlxG.keys.pressed.ONE){
-            switchToUnit(Reg.UNIT_HUMAN);
+            Reg.level++;
+            FlxG.resetState();
         } 
-        if(FlxG.keys.pressed.TWO){
-            switchToUnit(Reg.UNIT_MELEE);
-        } 
-        if(FlxG.keys.pressed.THREE){
-            switchToUnit(Reg.UNIT_RANGED);
-        } 
+
+        // if(FlxG.keys.pressed.ONE){
+        //     switchToUnit(Reg.UNIT_HUMAN);
+        // } 
+        // if(FlxG.keys.pressed.TWO){
+        //     switchToUnit(Reg.UNIT_MELEE);
+        // } 
+        // if(FlxG.keys.pressed.THREE){
+        //     switchToUnit(Reg.UNIT_RANGED);
+        // } 
     }
 
     public function switchToUnit(UnitType:Int){
         unitType = UnitType;
+
+        FlxG.keys.reset();
+
+        // canAttack = true;
+        // canJump = true;
+        aiming = false;
+
+        // Defaults
         acceleration.y = UnitStats.DEFAULT_GRAVITY;
+        maxVelocity.set(maxSpeedX, maxSpeedY);
 
         trace(unitType);
 
         switch(UnitType){
             case Reg.UNIT_HUMAN:
             Reg.getPlayerAnim(this);
+            maxVelocity.set(maxSpeedX, maxSpeedY);
 
             case Reg.UNIT_TANK:
+            maxVelocity.set(maxSpeedX * 0.85, maxSpeedY);
             Reg.getTankAnim(this);
 
             case Reg.UNIT_MELEE:
             Reg.getTankAnim(this);
 
             case Reg.UNIT_RANGED:
+            maxVelocity.set(maxSpeedX * 1.2, maxVelocity.y);
             Reg.getArcherAnim(this);
 
             case Reg.UNIT_FLYING:
-            trace("flying");
-            acceleration.y = UnitStats.FLY_GRAVITY * 4;
+            Reg.getGargoyleAnim(this);
+            acceleration.y = UnitStats.FLY_GRAVITY * 3;
             // Reg.getFlyingAnim(this);
         }
     }
@@ -157,21 +172,20 @@ class Player extends Unit
             if(canWalk()){
                 acceleration.x = -drag.x;
             }
-
-            facing = FlxObject.LEFT;
         } else if(FlxG.keys.pressed.D || FlxG.keys.pressed.RIGHT){
             if(canWalk()){
                 acceleration.x = drag.x;
             }            
-
-            facing = FlxObject.RIGHT;
         } else {
             acceleration.x = 0;
         }
     }
 
     public function jumpControls():Void{
-        if(unitType != Reg.UNIT_FLYING){
+        if(isTouching(FlxObject.FLOOR) && canJumpDown() && FlxG.keys.pressed.DOWN && FlxG.keys.justPressed.Z){
+            y += 5;
+            canJump = false;
+        } else if(unitType != Reg.UNIT_FLYING){
             if(FlxG.keys.pressed.W || FlxG.keys.pressed.Z){
                 if(canJump){
                     jump();
@@ -204,9 +218,23 @@ class Player extends Unit
     }
 
     public function animationUpdate():Void{
-        if(canAttack){
-            if(aiming && animation.getByName("aim_X") != null){
-                animation.play("aim_X");
+
+        if(velocity.x != 0 || (unitType == Reg.UNIT_FLYING && velocity.y != 0)){
+            if(FlxG.keys.pressed.LEFT){
+                facing = FlxObject.LEFT;
+            } else if(FlxG.keys.pressed.RIGHT){
+                facing = FlxObject.RIGHT;
+            }
+        }
+
+
+        if(unitType != Reg.UNIT_FLYING && canAttack){
+            if(unitType == Reg.UNIT_RANGED && aiming){
+                if(yAim > 0){
+                    animation.play("aim_Y");
+                } else{
+                    animation.play("aim_X");
+                }
             } else if(velocity.y < 0){
                 animation.play("jump");
             } else if(velocity.y > 0){
@@ -216,6 +244,13 @@ class Player extends Unit
                     animation.play("run");
                 else
                     animation.play("idle");
+            }
+        } else if(unitType == Reg.UNIT_FLYING){
+            if(velocity.y == 0){
+                animation.play("grounded");
+            } else{
+                animation.play("fly");
+                // animation.play((velocity.y > 0) ? "fly" : "fall" );
             }
         }
     }
@@ -236,32 +271,31 @@ class Player extends Unit
                     }
 
                     if(FlxG.keys.pressed.LEFT){
+                        yAim = 0;
                         xAim = FlxObject.LEFT;
+                        facing = FlxObject.LEFT;
                     } else if(FlxG.keys.pressed.RIGHT){
+                        yAim = 0;
+                        facing = FlxObject.RIGHT;
                         xAim = FlxObject.RIGHT;
                     }
                     
-                    // xAim = facing;
-
-                    // yAim = FlxObject.NONE;
-
                     if(FlxG.keys.pressed.UP){
                         yAim = FlxObject.UP;
-                    } else if(FlxG.keys.pressed.DOWN){
-                        yAim = FlxObject.DOWN;
                     }
+                    // else if(FlxG.keys.pressed.DOWN){
+                    //     yAim = FlxObject.DOWN;
+                    // }
 
                 } else if(aiming && FlxG.keys.justReleased.X){
-                    // attack();
-
                     trace(xAim + " " + yAim);
 
                     var angle = 90;
 
-                    if(yAim == FlxObject.UP){
-                        angle = (xAim != FlxObject.NONE) ? 35 : 0;
-                    } else if(yAim == FlxObject.DOWN){
-                        angle = (xAim != FlxObject.NONE) ? 135 : 180;
+                    if(yAim != 0){
+                        angle = 0;
+                    } else if (xAim != 0){
+                        angle = 90;
                     }
 
                     // if(xAim == FlxObject.RIGHT){
@@ -273,7 +307,7 @@ class Player extends Unit
 
                     angle = (facing == FlxObject.RIGHT)? angle : angle * -1;
 
-                    bullets.recycle(RangedBullet).shoot(new FlxPoint(x,y), angle);
+                    bullets.recycle(RangedBullet).shoot(new FlxPoint(getGraphicMidpoint().x,getGraphicMidpoint().y), angle);
 
                     aiming = false;
                     yAim = FlxObject.NONE;
@@ -294,14 +328,6 @@ class Player extends Unit
                 canAttack = true;
             }
         }
-        // if(isMeleeAttacking){
-        //     trace("attacking");
-        //     meleeAttackFrameCounter--;
-
-        //     if(meleeAttackFrameCounter <= 0){
-        //         isMeleeAttacking = false;
-        //     }
-        // }
     }
 
     public function attack():Void
@@ -311,36 +337,61 @@ class Player extends Unit
 
         canAttack = false;
 
-        // Ranged
-        if(unitType == Reg.UNIT_RANGED){
-            var angle = (facing == FlxObject.LEFT) ? -90 : 90;           
-            bullets.recycle(RangedBullet).shoot(new FlxPoint(x,y), angle);
-        } 
         // Melee
-        else if(unitType == Reg.UNIT_MELEE || unitType == Reg.UNIT_HUMAN || unitType == Reg.UNIT_TANK){
+        if(unitType == Reg.UNIT_MELEE || unitType == Reg.UNIT_HUMAN || unitType == Reg.UNIT_TANK){
             acceleration.x = 0;
-            isMeleeAttacking = true;
-            meleeAttackFrameCounter = MELEE_ATTACK_FRAMES;
             var offset = (facing == FlxObject.LEFT) ? -16 : 16;
-            bullets.recycle(MeleeBullet).shoot(new FlxPoint(getGraphicMidpoint().x + offset, getGraphicMidpoint().y - 2), 0);
+            bullets.recycle(MeleeBullet).shoot(new FlxPoint(getGraphicMidpoint().x + offset, y - 16), 0);
+
+            createSmashEffect(getGraphicMidpoint().x,y-16);
         }
         // Flying
         else if(unitType == Reg.UNIT_FLYING){
             trace("attack fly");
-            bullets.recycle(RangedBullet).shoot(new FlxPoint(getGraphicMidpoint().x, y), 180);            
+            bullets.recycle(BombBullet).shoot(new FlxPoint(getGraphicMidpoint().x, y), 180);
         }
     }
 
     public function takeDamage():Void{
-        FlxG.camera.shake(0.01, 0.05);
-        FlxG.camera.flash(null, 0.5);
+        FlxG.camera.shake(0.01, 0.1);
+        FlxG.camera.flash(null, 0.5, turnOffSlowMo);
+
+        kill();
+
+        FlxG.timeScale = 0.5;
+
+        PlayState.playerDie();
     }
 
     public function createDust(X:Float, Y:Float):Void{
-        effects.recycle(Dust).createEffect(X,Y,Reg.JUMP_DUST);
+        effects.recycle(WooshEffects).createEffect(X,Y,Reg.JUMP_DUST);
+    }
+
+    public function createSmashEffect(X:Float, Y:Float):Void{
+        effects.recycle(WooshEffects).createEffect(X,Y,Reg.ATTACK_WOOSH, facing);
     }
 
     public function canWalk():Bool{
-        return !aiming && canAttack && (unitType == Reg.UNIT_FLYING ? ((velocity.y != 0) ? true : false) : true);
+        return !aiming && (unitType == Reg.UNIT_FLYING ? ((velocity.y != 0) ? true : false) : canAttack);
+    }
+
+    public function getTileBelow(X:Float):Int{
+        return PlayState.level.level.getTile(Math.round(X/Reg.T_WIDTH),Math.round(y/Reg.T_HEIGHT + 1));
+    }
+
+    public function canJumpDown():Bool{
+        return (getTileBelow(x-Reg.T_WIDTH) == 33 || getTileBelow(x) == 33 || getTileBelow(x+Reg.T_WIDTH) == 33);
+    }
+
+    public function turnOffSlowMo(){
+        FlxG.timeScale = 1;
+    }
+
+    public function checkIfTouchingSpikes(){
+        var tileAbove:Int = PlayState.level.level.getTile(Math.round(x/Reg.T_WIDTH),Math.round(y/Reg.T_HEIGHT - 1));
+        var tileBelow:Int = PlayState.level.level.getTile(Math.round(x/Reg.T_WIDTH),Math.round(y/Reg.T_HEIGHT + 1));
+        if(tileAbove == 48 || tileAbove == 49 || tileAbove == 50 || tileBelow == 41 || tileBelow == 42 || tileBelow == 40){
+            takeDamage();
+        }       
     }
 }

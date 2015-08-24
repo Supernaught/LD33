@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxSprite;
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.util.FlxTimer;
 import flixel.util.FlxPoint;
 import flixel.util.FlxColor;
@@ -15,13 +16,17 @@ class MeleeBullet extends Bullet
     {
         super();
 
-        makeGraphic(Reg.T_WIDTH + 4, Reg.T_HEIGHT, FlxColor.WHITE);
+        new FlxTimer(0.05, destroyBullet, 1);
+
+        makeGraphic(24,30, 0x00000000);
+
+		setFacingFlip(FlxObject.LEFT, true, false);
+        setFacingFlip(FlxObject.RIGHT, false, false);
     }
 
     override public function update():Void
     {
         super.update();
-        new FlxTimer(0.05, destroyBullet, 1);
     }
 
     private function destroyBullet(Timer:FlxTimer):Void{
@@ -33,7 +38,9 @@ class MeleeBullet extends Bullet
         super.destroy();
     }
 
-    public override function shoot(Pos:FlxPoint, Angle:Float):Void{
-        super.reset(Pos.x - width / 2, Pos.y - height / 2);
+    public override function shoot(Pos:FlxPoint, Angle:Float):Bullet{
+        super.reset(Pos.x - width/2, Pos.y);
+
+        return this;
     }
 }

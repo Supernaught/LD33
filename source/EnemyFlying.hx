@@ -26,17 +26,25 @@ class EnemyFlying extends Enemy
 
         unitType = Reg.UNIT_FLYING;
 
-        attackDelay = 1;
+        attackDelay = 2;
         acceleration.y = UnitStats.FLY_GRAVITY;
 
         HOVER_FORCE = acceleration.y / 2;
 
         new FlxTimer(1,hover);
+
+        Reg.getGargoyleAnim(this);
+        animation.play("fly");
     }
 
     override public function update():Void
     {
         super.update();
+
+        if(getXDistanceFromPlayer() < 10 && y < player.y){
+            if(canAttack)
+                attack();
+        }
     }
 
     override public function init(X:Float, Y:Float, EnemyBullets:FlxTypedGroup<Bullet>, Player:Player):Void{
@@ -48,10 +56,7 @@ class EnemyFlying extends Enemy
     }
 
     override public function attack():Void{
-        trace("archer atk");
-        var angle = (facing == FlxObject.LEFT) ? -90 : 90;           
-        enemyBullets.recycle(RangedBullet).shoot(new FlxPoint(x,y), angle);
-
+        enemyBullets.recycle(BombBullet).shoot(new FlxPoint(getGraphicMidpoint().x, y), 180);
         super.attack();
     }
 

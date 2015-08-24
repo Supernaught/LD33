@@ -23,7 +23,11 @@ class Bullet extends FlxSprite
         super.destroy();
     }
 
-    public function shoot(Pos:FlxPoint, Angle:Float):Void{
-        
+    public function shoot(Pos:FlxPoint, Angle:Float):Bullet{
+ 		return this;       
+    }
+
+    public function setSpeed(X:Float = null, Y:Float = null):Void{
+    	
     }
 }

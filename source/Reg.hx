@@ -19,9 +19,7 @@ class Reg
 	public static inline var DUST_SPRITESHEET = "assets/images/dust_spritesheet.png";
 	public static inline var ARROW_SPRITE = "assets/images/arrow_sprite.png";
 	public static inline var MOON_SPRITE = "assets/images/moon_sprite.png";
-	
-	// public static inline var DUST_SPRITESHEET = "assets/images/dust_spritesheet.png";
-
+	public static inline var GIBS_SPRITESHEET = "assets/images/gibs.png";
 	
 	// Physics
 	public static inline var GRAVITY = 2.4;
@@ -46,10 +44,15 @@ class Reg
 
 	// Dust Effect Types
 	public static inline var JUMP_DUST:String = "JUMP_DUST";
+	public static inline var ATTACK_WOOSH:String = "ATTACK_WOOSH";
 
 	// Levels
 	public static inline var TEST:String = "assets/data/ld33_tileset.csv";
 	public static inline var PLAIN2:String = "assets/data/plain2.csv";
+	public static inline var LEVEL1:String = "assets/data/level1.csv";
+	public static inline var LEVEL2:String = "assets/data/level2.csv";
+	public static inline var LEVEL3:String = "assets/data/level3.csv";
+
 
 	public static function getPlayerAnim(Player:FlxSprite){
 		Player.loadGraphic(PLAYER_SPRITESHEET, true, 16,16);
@@ -108,11 +111,8 @@ class Reg
 		Sprite.animation.add("jumpDust", [0,1,2,3], 25, false);
 	}
 
-public static function getSmashEffect(Sprite:FlxSprite){
-		Sprite.loadGraphic(SMASH_SPRITESHEET, true, 16,16);
-		Sprite.animation.add("jumpDust", [9,9,0,1,2,3,4,5,6,7,8], 30, false);
+	public static function getSmashEffect(Sprite:FlxSprite){
+		Sprite.loadGraphic(SMASH_SPRITESHEET, true, 32, 32);
+		Sprite.animation.add("smashEffect", [9,9,0,1,2,3,4,5,6,7,8], 30, false);
 	}
-
-
-	
 }

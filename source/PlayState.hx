@@ -9,6 +9,8 @@ import flixel.ui.FlxButton;
 import flixel.text.FlxText;
 import flixel.util.FlxPoint;
 import flixel.util.FlxMath;
+import flixel.tile.FlxTilemap;
+import flixel.tile.FlxTile;
 import flixel.group.FlxTypedGroup;
 import flixel.effects.particles.FlxEmitter;
 
@@ -24,12 +26,14 @@ class PlayState extends FlxState
 	var bullets:FlxTypedGroup<Bullet>;
 	var enemyBullets:FlxTypedGroup<Bullet>;
 	var enemies:FlxTypedGroup<Enemy>;
-	var enemyGibs:FlxEmitter;
+	public static var enemyGibs:FlxEmitter;
 
-	public static var effects:FlxTypedGroup<Dust>;
+	public static var effects:FlxTypedGroup<WooshEffects>;
 
 	override public function create():Void
 	{
+		FlxG.mouse.visible = false;
+
 		super.create();
 
 		setupPlayer();
@@ -38,17 +42,19 @@ class PlayState extends FlxState
 		setupWorld();
 		setupCamera();
 		setupGibs();
-		// setupBg();
+		setupBg();
 
 		FlxG.camera.bgColor = 0xff23173b;
 
         add(level.level);
+        add(enemyGibs);
 		add(player);
         add(bullets);
         add(enemyBullets);
         add(enemies);
         add(effects);
-        add(enemyGibs);
+
+        // FlxG.debugger.drawDebug = true;
 	}
 	
 	override public function destroy():Void
@@ -67,28 +73,28 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		forDebug();
-		cameraTarget.setPosition(player.x + (FlxG.mouse.x - player.x)/6, player.y + (FlxG.mouse.y - player.y)/6);
+		// cameraTarget.setPosition(player.x + (FlxG.mouse.x - player.x)/6, player.y + (FlxG.mouse.y - player.y)/6);
 		
 		super.update();
 
+		level.level.overlapsWithCallback(player,playerLevelCollision, null, null);
+
 		FlxG.collide(bullets, level.level, onCollision);
+		FlxG.collide(enemyBullets, level.level, onCollision);
 		FlxG.collide(enemyGibs, level.level, onCollision);
+		FlxG.collide(enemies, level.level, onCollision);
+		FlxG.collide(player, level.level, playerLevelCollision);
+
 		FlxG.overlap(bullets, enemies, bulletHit);
 		FlxG.overlap(player, enemies, playerHit);
 		FlxG.overlap(player, enemyBullets, playerHit);
-		FlxG.collide(enemies, level.level, onCollision);
-		FlxG.collide(player, level.level);
-
 	}	
 
 	private function forDebug(){
 		if(FlxG.keys.justPressed.R){
 			trace("Restart level.");
+			FlxG.timeScale = 1;
 			FlxG.switchState(new PlayState());
-		}
-		if(FlxG.keys.justPressed.SPACE){
-			trace("Spawn enemy.");
-			enemies.recycle(Enemy).init(10,100,enemyBullets,player);
 		}
 	}
 
@@ -100,6 +106,13 @@ class PlayState extends FlxState
 		if(Std.is(Object1, Bullet)){
 			Object1.kill();
 		}
+	}
+
+	private function playerLevelCollision(Tile:FlxObject, Player:FlxObject):Bool{
+		// trace(Tile.index);
+
+		return true;
+		// trace(Level);
 	}
 
 	private function bulletHit(Bullet:Bullet, Enemy:Enemy):Void
@@ -114,20 +127,29 @@ class PlayState extends FlxState
 		}
 	}
 
-	private function playerHit(Player:Player, Enemy:Enemy):Void{
-		Player.takeDamage();
+	private function playerHit(Player:Player, HitObject:FlxObject):Void{
+		if (Std.is(HitObject, Bullet)){
+			HitObject.kill();
+		}
+
+		player.takeDamage();
+	}
+
+	public static function playerDie(){
+		enemyGibs.at(player);
+		enemyGibs.start(true,2,0.2,40,10);
 	}
 
 	private function setupPlayer():Void
 	{
         // Effects
-        effects = new FlxTypedGroup<Dust>();
+        effects = new FlxTypedGroup<WooshEffects>();
         effects.maxSize = 10;
 
         bullets = new FlxTypedGroup<Bullet>();
         bullets.maxSize = 50;
 
-		player = new Player(3 * 16, 3 * 16,bullets, effects);
+		player = new Player(3 * 16, 18 * 16,bullets, effects);
 	}
 
 	private function setupEnemies():Void
@@ -141,7 +163,24 @@ class PlayState extends FlxState
 
 	private function setupLevel():Void
 	{
-		level = new Level(Reg.PLAIN2, enemies, enemyBullets, player);
+		var levelName:String = "";
+
+		switch(Reg.level){
+			case 0:
+			levelName = Reg.PLAIN2;
+			// levelName = Reg.TUTORIAL;
+
+			case 1:
+			levelName = Reg.LEVEL1;
+
+			case 2:
+			levelName = Reg.LEVEL2;
+
+			case 3:
+			levelName = Reg.LEVEL3;
+		}
+
+		level = new Level(levelName, enemies, enemyBullets, player);
 	}
 
 	private function setupWorld():Void
@@ -152,9 +191,9 @@ class PlayState extends FlxState
 
 	private function setupCamera():Void
 	{
-		cameraTarget = new FlxSprite(0,0);
-		FlxG.camera.follow(cameraTarget, FlxCamera.STYLE_LOCKON, 7);
-		FlxG.camera.setBounds(0,-200,level.level.width, level.level.height*2);
+		// cameraTarget = new FlxSprite(0,0);
+		FlxG.camera.follow(player, FlxCamera.STYLE_LOCKON, 7);
+		FlxG.camera.setBounds(0,0,level.level.width, level.level.height);
 	}
 
 	private function setupBg():Void
@@ -172,6 +211,6 @@ class PlayState extends FlxState
 		enemyGibs.setRotation( -360, 0);
 		enemyGibs.gravity = 350;
 		enemyGibs.bounce = 0.3;
-		enemyGibs.makeParticles(Reg.DUST_SPRITESHEET, 10, 20, true, 0.5);
+		enemyGibs.makeParticles(Reg.BLOOD_SPRITESHEET, 50, 20, true, 0.5);
 	}
 }
