@@ -85,6 +85,7 @@ class PlayState extends FlxState
 		FlxG.collide(enemyBullets, level.level, onCollision);
 		FlxG.collide(enemyGibs, level.level, onCollision);
 		FlxG.collide(enemies, level.level, onCollision);
+		FlxG.collide(enemies, enemies);
 		FlxG.collide(player, level.level, playerLevelCollision);
 
 		FlxG.overlap(bullets, enemies, bulletHit);
@@ -180,6 +181,12 @@ class PlayState extends FlxState
 
 			case 3:
 			levelName = Reg.LEVEL3;
+
+			case 10:
+			levelName = Reg.DRAFT_1;
+
+			case 11:
+			levelName = Reg.DRAFT_2;
 		}
 
 		level = new Level(levelName, enemies, enemyBullets, player);

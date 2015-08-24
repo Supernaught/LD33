@@ -55,7 +55,6 @@ class Level {
 
 		// Position units
 		for(i in Reg.TILE_ID_PLAYER...Reg.TILE_ID_GARGOYLE+1){
-			trace(i);
 			if(level.getTileCoords(i, false) != null){
 				for(Point in level.getTileCoords(i, false)){
 		        	switch(i){

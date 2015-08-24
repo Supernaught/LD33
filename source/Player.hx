@@ -117,6 +117,15 @@ class Player extends Unit
         //     FlxG.resetState();
         // } 
 
+        if(FlxG.keys.pressed.Q){
+            Reg.level = 10;
+            FlxG.resetState();
+        }
+        if(FlxG.keys.pressed.W){
+            Reg.level = 11;
+            FlxG.resetState();
+        }
+
         if(FlxG.keys.pressed.ONE){
             switchToUnit(Reg.UNIT_HUMAN);
         } 

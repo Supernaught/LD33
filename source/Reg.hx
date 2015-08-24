@@ -54,6 +54,9 @@ class Reg
 	public static inline var LEVEL2:String = "assets/data/level2.csv";
 	public static inline var LEVEL3:String = "assets/data/level3.csv";
 
+	public static inline var DRAFT_1:String = "assets/data/alfonz1_draft.csv";
+	public static inline var DRAFT_2:String = "assets/data/alfonz2_draft.csv";
+
 	// Tilesheet Tile IDs
 	public static inline var TILE_ID_PLAYER:Int = 60;
 	public static inline var TILE_ID_TANK:Int = 61;
