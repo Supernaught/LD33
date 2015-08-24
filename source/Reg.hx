@@ -53,15 +53,16 @@ class Reg
 	public static inline var LEVEL1:String = "assets/data/level1.csv";
 	public static inline var LEVEL2:String = "assets/data/level2.csv";
 	public static inline var LEVEL3:String = "assets/data/level3.csv";
+	public static inline var LEVEL_INTRO:String = "assets/data/level_intro.csv";
 
 	public static inline var DRAFT_1:String = "assets/data/alfonz1_draft.csv";
 	public static inline var DRAFT_2:String = "assets/data/alfonz2_draft.csv";
 
 	// Tilesheet Tile IDs
-	public static inline var TILE_ID_PLAYER:Int = 60;
-	public static inline var TILE_ID_TANK:Int = 61;
-	public static inline var TILE_ID_ARCHER:Int = 62;
-	public static inline var TILE_ID_GARGOYLE:Int = 63;
+	public static inline var TILE_ID_PLAYER:Int = 108;
+	public static inline var TILE_ID_TANK:Int = 109;
+	public static inline var TILE_ID_ARCHER:Int = 110;
+	public static inline var TILE_ID_GARGOYLE:Int = 111;
 
 	public static function getPlayerAnim(Player:FlxSprite){
 		Player.loadGraphic(PLAYER_SPRITESHEET, true, 16,16);

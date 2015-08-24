@@ -400,7 +400,7 @@ class Player extends Unit
     public function checkIfTouchingSpikes(){
         var tileAbove:Int = PlayState.level.level.getTile(Math.round(x/Reg.T_WIDTH),Math.round(y/Reg.T_HEIGHT - 1));
         var tileBelow:Int = PlayState.level.level.getTile(Math.round(x/Reg.T_WIDTH),Math.round(y/Reg.T_HEIGHT + 1));
-        if(tileAbove == 48 || tileAbove == 49 || tileAbove == 50 || tileBelow == 41 || tileBelow == 42 || tileBelow == 40){
+        if(tileAbove == 52 || tileAbove == 53 || tileAbove == 54 || tileBelow == 41 || tileBelow == 42 || tileBelow == 40){
             takeDamage();
         }       
     }

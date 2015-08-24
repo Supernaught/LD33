@@ -170,8 +170,7 @@ class PlayState extends FlxState
 
 		switch(Reg.level){
 			case 0:
-			levelName = Reg.PLAIN2;
-			// levelName = Reg.TUTORIAL;
+			levelName = Reg.DRAFT_1;
 
 			case 1:
 			levelName = Reg.LEVEL1;
