@@ -21,6 +21,12 @@ class Reg
 	public static inline var ARROW_SPRITE = "assets/images/arrow_sprite.png";
 	public static inline var MOON_SPRITE = "assets/images/moon_sprite.png";
 	public static inline var GIBS_SPRITESHEET = "assets/images/gibs.png";
+
+	// Title screen
+	public static inline var TITLE_BG = "assets/images/mainmenu_bg.png";
+	public static inline var TITLE_BG2 = "assets/images/mainmenu_bg2.png";
+	public static inline var TITLE_TEXT = "assets/images/title_text.png";
+	public static inline var TITLE_SUBTITLE = "assets/images/madeforld33.png";
 	
 	// Physics
 	public static inline var GRAVITY = 2.4;
@@ -56,8 +62,17 @@ class Reg
 	public static inline var LEVEL3:String = "assets/data/level3.csv";
 	public static inline var LEVEL_INTRO:String = "assets/data/level_intro.csv";
 
+	public static inline var LEVEL_1_TITLE:String = "I. The Cavern";
+	public static inline var LEVEL_2_TITLE:String = "II. The Chasm";
+	public static inline var LEVEL_3_TITLE:String = "III. The Hollow";
+	public static inline var LEVEL_4_TITLE:String = "IV. The End";
+
 	public static inline var DRAFT_1:String = "assets/data/alfonz1_draft.csv";
 	public static inline var DRAFT_2:String = "assets/data/alfonz2_draft.csv";
+
+	// Fonts
+	public static inline var FONT:String = "assets/font.ttf";
+	public static inline var ALAGARD:String = "assets/alagard.ttf";
 
 	// Tilesheet Tile IDs
 	public static inline var TILE_ID_PLAYER:Int = 108;
@@ -125,5 +140,16 @@ class Reg
 	public static function getSmashEffect(Sprite:FlxSprite){
 		Sprite.loadGraphic(SMASH_SPRITESHEET, true, 32, 32);
 		Sprite.animation.add("smashEffect", [9,9,0,1,2,3,4,5,6,7,8], 30, false);
+	}
+
+	public static function getLevelTitle():String{
+		switch(level){
+			case 0: return LEVEL_1_TITLE;
+			case 1: return LEVEL_2_TITLE;
+			case 2: return LEVEL_3_TITLE;
+			case 3: return LEVEL_4_TITLE;
+		}
+
+		return "";
 	}
 }

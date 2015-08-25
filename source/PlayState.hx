@@ -66,33 +66,10 @@ class PlayState extends FlxState
         add(enemies);
         add(effects);
 
-        if(Reg.level == 0){
-			myText = new FlxText(0, 95, FlxG.width); // x, y, width
-			myText.text = "NECROMORPH";
-			myText.scrollFactor.set(0,0);
-			// myText.setFormat("assets/font.ttf", 24, FlxColor.WHITE, "center");
-			myText.setBorderStyle(FlxText.BORDER_OUTLINE, FlxG.camera.bgColor, 2);
-			myText.alpha = 0;
-			add(myText);
+        setupLevelTitle();
 
-			myText2 = new FlxText(0, 120, FlxG.width); // x, y, width
-			myText2.text = "BY SUPERNAUGHT";
-			myText2.scrollFactor.set(0,0);
-			// myText2.setFormat("assets/font.ttf", 8, FlxColor.WHITE, "center");
-			myText2.setBorderStyle(FlxText.BORDER_OUTLINE, FlxG.camera.bgColor, 1);
-			myText2.alpha = 0;
-			add(myText2);
-
-			FlxSpriteUtil.fadeIn(myText, 2, false);
-			FlxSpriteUtil.fadeIn(myText2, 2, false);
-			new FlxTimer(6,fadeOutTitles);
-        }
-
-        // FlxG.timeScale = 1;
-		// FlxG.switchState(new PlayState());
-
-        // FlxG.debugger.drawDebug = true;
         new FlxTimer(0.1, updateCameraFollow);
+        // FlxG.debugger.drawDebug = true;
 	}
 	
 	override public function destroy():Void
@@ -293,7 +270,10 @@ class PlayState extends FlxState
 	public static function gotoNextLevel(){
         Reg.level++;
         FlxG.camera.fade(FlxColor.BLACK, 0.2);
-        new FlxTimer(1, resetLevel);
+
+        if(Reg.level != 3){
+        	new FlxTimer(1, resetLevel);
+        }
 	}
 
 	public static function resetLevel(Timer:FlxTimer){
@@ -306,6 +286,27 @@ class PlayState extends FlxState
 
 	public function fadeOutTitles(Timer:FlxTimer){
 		FlxSpriteUtil.fadeOut(myText, 1);
-		FlxSpriteUtil.fadeOut(myText2, 1);
+	}
+
+	public function setupLevelTitle(){
+		myText = new FlxText(0, FlxG.height/2 - 16, FlxG.width); // x, y, width
+		myText.text = Reg.getLevelTitle();
+		myText.scrollFactor.set(0,0);
+		myText.setFormat(Reg.ALAGARD, 16, FlxColor.WHITE, "center");
+		myText.setBorderStyle(FlxText.BORDER_OUTLINE, FlxG.camera.bgColor, 1);
+		myText.alpha = 0;
+		add(myText);
+
+		// myText2 = new FlxText(0, 120, FlxG.width); // x, y, width
+		// myText2.text = "BY SUPERNAUGHT";
+		// myText2.scrollFactor.set(0,0);
+		// myText2.setFormat(Reg.FONT, 8, FlxColor.WHITE, "center");
+		// myText2.setBorderStyle(FlxText.BORDER_OUTLINE, FlxG.camera.bgColor, 1);
+		// myText2.alpha = 0;
+		// add(myText2);
+
+		FlxSpriteUtil.fadeIn(myText, 1, false);
+		// FlxSpriteUtil.fadeIn(myText2, 2, false);
+		new FlxTimer(3,fadeOutTitles);
 	}
 }

@@ -41,7 +41,6 @@
     	<sound path="jump.wav" id="jump" />
     	<sound path="ground.wav" id="ground" />
     	<sound path="shoot.wav" id="shoot" />
-    	<sound path="test.ogg" id="test" />
 	</assets>
 	
 	<!--------------------------------LIBRARIES------------------------------------->

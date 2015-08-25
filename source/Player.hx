@@ -82,8 +82,6 @@ class Player extends Unit
 
         setFacingFlip(FlxObject.LEFT, true, false);
         setFacingFlip(FlxObject.RIGHT, false, false);
-
-        FlxG.sound.play("test");
     }
 
     override public function update():Void
