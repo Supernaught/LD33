@@ -15,7 +15,10 @@ class BombBullet extends Bullet
     {
         super();
 
-        makeGraphic(6, 14, FlxColor.WHITE);
+        // makeGraphic(6, 14, FlxColor.WHITE);
+        loadGraphic("assets/images/rock.png");
+
+        angularVelocity = 50;
 
         acceleration.y = 600;
     }

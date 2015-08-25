@@ -11,6 +11,7 @@ import flixel.util.FlxPoint;
 import flixel.util.FlxTimer;
 import flixel.util.FlxColor;
 import flixel.util.FlxMath;
+import flixel.util.FlxSpriteUtil;
 import flixel.tile.FlxTilemap;
 import flixel.tile.FlxTile;
 import flixel.group.FlxTypedGroup;
@@ -24,6 +25,10 @@ class PlayState extends FlxState
 
 	var bg:FlxSprite;
 	var bg2:FlxSprite;
+	var myText:FlxText;
+	var myText2:FlxText;
+
+
 	public static var player:Player;
 	var bullets:FlxTypedGroup<Bullet>;
 	var enemyBullets:FlxTypedGroup<Bullet>;
@@ -49,7 +54,7 @@ class PlayState extends FlxState
 		setupGibs();
 		setupBg();
 
-		FlxG.camera.bgColor = 0xff1d0d2c;
+		FlxG.camera.bgColor = 0xff20132e;
 
         add(level.level);
         add(enemyGibs);
@@ -60,6 +65,28 @@ class PlayState extends FlxState
         add(enemyBullets);
         add(enemies);
         add(effects);
+
+        if(Reg.level == 0){
+			myText = new FlxText(0, 95, FlxG.width); // x, y, width
+			myText.text = "NECROMORPH";
+			myText.scrollFactor.set(0,0);
+			// myText.setFormat("assets/font.ttf", 24, FlxColor.WHITE, "center");
+			myText.setBorderStyle(FlxText.BORDER_OUTLINE, FlxG.camera.bgColor, 2);
+			myText.alpha = 0;
+			add(myText);
+
+			myText2 = new FlxText(0, 120, FlxG.width); // x, y, width
+			myText2.text = "BY SUPERNAUGHT";
+			myText2.scrollFactor.set(0,0);
+			// myText2.setFormat("assets/font.ttf", 8, FlxColor.WHITE, "center");
+			myText2.setBorderStyle(FlxText.BORDER_OUTLINE, FlxG.camera.bgColor, 1);
+			myText2.alpha = 0;
+			add(myText2);
+
+			FlxSpriteUtil.fadeIn(myText, 2, false);
+			FlxSpriteUtil.fadeIn(myText2, 2, false);
+			new FlxTimer(6,fadeOutTitles);
+        }
 
         // FlxG.timeScale = 1;
 		// FlxG.switchState(new PlayState());
@@ -94,6 +121,7 @@ class PlayState extends FlxState
 		FlxG.collide(enemyBullets, level.level, onCollision);
 		FlxG.collide(enemyGibs, level.level, onCollision);
 		FlxG.collide(whiteGibs, level.level, onCollision);
+		FlxG.collide(redGibs, level.level, onCollision);
 		FlxG.collide(enemies, level.level, onCollision);
 		FlxG.collide(enemies, enemies);
 		FlxG.collide(player, level.level, playerLevelCollision);
@@ -118,9 +146,12 @@ class PlayState extends FlxState
 		if(Std.is(Object1, Bullet)){
 			Object1.kill();
 
-			if(Std.is(Object1, RangedBullet) || Std.is(Object1, BombBullet)){
+			if(Std.is(Object1, RangedBullet)){
 				whiteGibs.at(Object1);
 				whiteGibs.start(true,1,0,5,3);
+			} else if(Std.is(Object1, BombBullet)){
+				redGibs.at(Object1);
+				redGibs.start(true,1,0,5,3);
 			}
 		}
 	}
@@ -192,10 +223,7 @@ class PlayState extends FlxState
 			levelName = Reg.DRAFT_1;
 
 			case 2:
-			levelName = Reg.LEVEL2;
-
-			case 3:
-			levelName = Reg.LEVEL3;
+			levelName = Reg.DRAFT_2;
 
 			case 10:
 			levelName = Reg.DRAFT_1;
@@ -229,6 +257,10 @@ class PlayState extends FlxState
 		bg = new FlxSprite(0, 0, "assets/images/cave_walls.png");
 		bg.scrollFactor.set(0.2,0.2);
 		add(bg);
+
+		// var title = new FlxSprite(0,0,"assets/images/title.png");
+		// title.scrollFactor.set(0,0);
+		// add(title);
 	}
 
 
@@ -242,11 +274,11 @@ class PlayState extends FlxState
 		enemyGibs.makeParticles(Reg.UNIT_GIBS_SPRITESHEET, 50, 20, true, 0.5);
 
 		redGibs = new FlxEmitter();
-		redGibs.setXSpeed( -100, 100);
-		redGibs.setYSpeed( -150, 0);
+		redGibs.setXSpeed( -50, 50);
+		redGibs.setYSpeed( -80, 20);
 		redGibs.setRotation( -360, 0);
-		redGibs.gravity = 350;
-		redGibs.bounce = 0.3;
+		redGibs.gravity = 300;
+		redGibs.bounce = 0.1;
 		redGibs.makeParticles(Reg.RED_GIBS_SPRITESHEET, 50, 20, true, 0.5);
 
 		whiteGibs = new FlxEmitter();
@@ -270,5 +302,10 @@ class PlayState extends FlxState
 
 	public function updateCameraFollow(Timer:FlxTimer){
 		FlxG.camera.follow(player, FlxCamera.STYLE_LOCKON, 10);
+	}
+
+	public function fadeOutTitles(Timer:FlxTimer){
+		FlxSpriteUtil.fadeOut(myText, 1);
+		FlxSpriteUtil.fadeOut(myText2, 1);
 	}
 }

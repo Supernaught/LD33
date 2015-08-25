@@ -6,6 +6,7 @@ import flixel.FlxG;
 import flixel.util.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.group.FlxTypedGroup;
+import flixel.util.FlxTimer;
 
 class Player extends Unit
 {
@@ -81,6 +82,8 @@ class Player extends Unit
 
         setFacingFlip(FlxObject.LEFT, true, false);
         setFacingFlip(FlxObject.RIGHT, false, false);
+
+        FlxG.sound.play("test");
     }
 
     override public function update():Void
@@ -121,28 +124,39 @@ class Player extends Unit
         //     FlxG.resetState();
         // } 
 
-        if(FlxG.keys.pressed.Q){
-            Reg.level = 10;
-            FlxG.resetState();
-        }
-        if(FlxG.keys.pressed.W){
-            Reg.level = 11;
-            FlxG.resetState();
-        }
+        // if(FlxG.keys.pressed.Q){
+        //     Reg.level = 10;
+        //     FlxG.resetState();
+        // }
+        // if(FlxG.keys.pressed.W){
+        //     Reg.level = 11;
+        //     FlxG.resetState();
+        // }
+
+        // if(FlxG.keys.pressed.ONE){
+        //     switchToUnit(Reg.UNIT_HUMAN);
+        // } 
+        // if(FlxG.keys.pressed.TWO){
+        //     switchToUnit(Reg.UNIT_TANK);
+        // } 
+        // if(FlxG.keys.pressed.THREE){
+        //     switchToUnit(Reg.UNIT_RANGED);
+        // } 
+        // if(FlxG.keys.pressed.FOUR){
+        //     switchToUnit(Reg.UNIT_FLYING);
+        // } 
 
         if(FlxG.keys.pressed.ONE){
-            Sounds.hit();
-
-            switchToUnit(Reg.UNIT_HUMAN);
+            Reg.level = 0;
+            PlayState.resetLevel(new FlxTimer());
         } 
         if(FlxG.keys.pressed.TWO){
-            switchToUnit(Reg.UNIT_TANK);
+            Reg.level = 1;
+            PlayState.resetLevel(new FlxTimer());
         } 
         if(FlxG.keys.pressed.THREE){
-            switchToUnit(Reg.UNIT_RANGED);
-        } 
-        if(FlxG.keys.pressed.FOUR){
-            switchToUnit(Reg.UNIT_FLYING);
+            Reg.level = 2;
+            PlayState.resetLevel(new FlxTimer());
         } 
     }
 
