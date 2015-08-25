@@ -26,6 +26,8 @@ class MenuState extends FlxState
 	override public function create():Void
 	{
 		super.create();
+		FlxG.camera.bgColor = 0xff18122b;
+
 		var speed:Float = 30;
 
 		bg = new FlxSprite(Reg.TITLE_BG);
@@ -49,6 +51,9 @@ class MenuState extends FlxState
 		title.setPosition(FlxG.width/2 - title.width/2, FlxG.height/2 - 60);
 		subtitle.setPosition(FlxG.width/2 - subtitle.width/2, FlxG.height/2 + 90);
 
+		var moon = new FlxSprite(FlxG.width/2, 20, Reg.MOON_SPRITE);
+
+		add(moon);
 		add(dark_bg);
 		add(dark_bg2);
 		add(bg);

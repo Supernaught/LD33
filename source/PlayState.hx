@@ -54,7 +54,7 @@ class PlayState extends FlxState
 		setupGibs();
 		setupBg();
 
-		FlxG.camera.bgColor = 0xff20132e;
+		FlxG.camera.bgColor = 0xff18122b;
 
         add(level.level);
         add(enemyGibs);
