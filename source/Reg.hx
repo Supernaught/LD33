@@ -71,7 +71,7 @@ class Reg
 	public static inline var DRAFT_2:String = "assets/data/alfonz2_draft.csv";
 
 	// Fonts
-	public static inline var FONT:String = "assets/font.ttf";
+	public static inline var FONT:String = "assets/04b03.ttf";
 	public static inline var ALAGARD:String = "assets/alagard.ttf";
 
 	// Tilesheet Tile IDs

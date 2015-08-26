@@ -16,6 +16,7 @@ import flixel.tile.FlxTilemap;
 import flixel.tile.FlxTile;
 import flixel.group.FlxTypedGroup;
 import flixel.effects.particles.FlxEmitter;
+import flixel.group.FlxGroup;
 
 class PlayState extends FlxState
 {
@@ -28,6 +29,7 @@ class PlayState extends FlxState
 	var myText:FlxText;
 	var myText2:FlxText;
 
+	var levelCollidable:FlxGroup;
 
 	public static var player:Player;
 	var bullets:FlxTypedGroup<Bullet>;
@@ -54,7 +56,7 @@ class PlayState extends FlxState
 		setupGibs();
 		setupBg();
 
-		FlxG.camera.bgColor = 0xff18122b;
+		FlxG.camera.bgColor = 0xff20132e;
 
         add(level.level);
         add(enemyGibs);
@@ -67,6 +69,16 @@ class PlayState extends FlxState
         add(effects);
 
         setupLevelTitle();
+
+        levelCollidable = new FlxGroup();
+        
+        levelCollidable.add(bullets);
+		levelCollidable.add(enemyBullets);
+		levelCollidable.add(enemyGibs);
+		levelCollidable.add(whiteGibs);
+		levelCollidable.add(redGibs);
+		levelCollidable.add(player);
+		levelCollidable.add(enemies);
 
         new FlxTimer(0.1, updateCameraFollow);
         // FlxG.debugger.drawDebug = true;
@@ -94,14 +106,15 @@ class PlayState extends FlxState
 
 		level.level.overlapsWithCallback(player,playerLevelCollision);
 
-		FlxG.collide(bullets, level.level, onCollision);
-		FlxG.collide(enemyBullets, level.level, onCollision);
-		FlxG.collide(enemyGibs, level.level, onCollision);
-		FlxG.collide(whiteGibs, level.level, onCollision);
-		FlxG.collide(redGibs, level.level, onCollision);
-		FlxG.collide(enemies, level.level, onCollision);
+		FlxG.collide(levelCollidable, level.level, onCollision);
+		// FlxG.collide(bullets, level.level, onCollision);
+		// FlxG.collide(enemyBullets, level.level, onCollision);
+		// FlxG.collide(enemyGibs, level.level, onCollision);
+		// FlxG.collide(whiteGibs, level.level, onCollision);
+		// FlxG.collide(redGibs, level.level, onCollision);
+		// FlxG.collide(enemies, level.level, onCollision);
+		// FlxG.collide(player, level.level, playerLevelCollision);
 		FlxG.collide(enemies, enemies);
-		FlxG.collide(player, level.level, playerLevelCollision);
 
 		FlxG.overlap(bullets, enemies, bulletHit);
 		FlxG.overlap(player, enemies, playerHit);
@@ -128,6 +141,7 @@ class PlayState extends FlxState
 				whiteGibs.start(true,1,0,5,3);
 			} else if(Std.is(Object1, BombBullet)){
 				redGibs.at(Object1);
+				Sounds.hit2();
 				redGibs.start(true,1,0,5,3);
 			}
 		}
@@ -164,7 +178,7 @@ class PlayState extends FlxState
 		enemyGibs.at(player);
 		enemyGibs.start(true,2,0.2,40,10);
 		Sounds.player_die();
-		new FlxTimer(1.5, resetLevel);
+		new FlxTimer(2, resetLevel);
 	}
 
 	private function setupPlayer():Void
@@ -201,6 +215,9 @@ class PlayState extends FlxState
 
 			case 2:
 			levelName = Reg.DRAFT_2;
+
+			case 3:
+			levelName = "END";
 
 			case 10:
 			levelName = Reg.DRAFT_1;
@@ -273,11 +290,17 @@ class PlayState extends FlxState
 
         if(Reg.level != 3){
         	new FlxTimer(1, resetLevel);
+        } else {
+        	new FlxTimer(1, gotoEndState);
         }
 	}
 
 	public static function resetLevel(Timer:FlxTimer){
         FlxG.resetState();       
+	}
+
+	public static function gotoEndState(Timer:FlxTimer){
+        FlxG.switchState(new EndState());
 	}
 
 	public function updateCameraFollow(Timer:FlxTimer){

@@ -156,6 +156,10 @@ class Player extends Unit
             Reg.level = 2;
             PlayState.resetLevel(new FlxTimer());
         } 
+        if(FlxG.keys.pressed.FOUR){
+            Reg.level = 3;
+            PlayState.resetLevel(new FlxTimer());
+        } 
     }
 
     public function switchToUnit(UnitType:Int){
@@ -246,6 +250,7 @@ class Player extends Unit
     public function hover():Void
     {
         velocity.y = -UnitStats.FLY_HOVER_FORCE * 4;
+        Sounds.woosh();
     }
 
     public function jump():Void
@@ -254,7 +259,7 @@ class Player extends Unit
             createDust(x,y);
             velocity.y = -jumpForce;
             canJump = false;
-            Sounds.jump();
+            Sounds.woosh();
         }
     }
 
@@ -437,7 +442,7 @@ class Player extends Unit
     public function checkIfTouchingSpikes(){
         var tileAbove:Int = PlayState.level.level.getTile(Math.round(x/Reg.T_WIDTH),Math.round(y/Reg.T_HEIGHT - 1));
         var tileBelow:Int = PlayState.level.level.getTile(Math.round(x/Reg.T_WIDTH),Math.round(y/Reg.T_HEIGHT + 1));
-        if(tileAbove == 52 || tileAbove == 53 || tileAbove == 54 || tileBelow == 41 || tileBelow == 42 || tileBelow == 40){
+        if(tileAbove == 52 || tileAbove == 53 || tileAbove == 54 || tileBelow == 41 || tileBelow == 42 || tileBelow == 40 || tileBelow == 68 || tileBelow == 69){
             takeDamage();
         }       
     }

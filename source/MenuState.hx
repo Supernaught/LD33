@@ -14,6 +14,8 @@ import flixel.util.FlxColor;
  */
 class MenuState extends FlxState
 {
+	var goingToNextLevel:Bool = false;
+
 	var bg:FlxSprite;
 	var bg2:FlxSprite;
 
@@ -30,23 +32,23 @@ class MenuState extends FlxState
 
 		var speed:Float = 30;
 
-		bg = new FlxSprite(Reg.TITLE_BG);
+		bg = new FlxSprite(0,0,Reg.TITLE_BG);
 		bg.velocity.x = -speed;
 
-		bg2 = new FlxSprite(Reg.TITLE_BG);
+		bg2 = new FlxSprite(0,0,Reg.TITLE_BG);
 		bg2.x = bg.x + bg.width;
 		bg2.velocity.x = -speed;
 
-		dark_bg = new FlxSprite(Reg.TITLE_BG2);
+		dark_bg = new FlxSprite(0,0,Reg.TITLE_BG2);
 		dark_bg.velocity.x = -speed/2;
 
-		dark_bg2 = new FlxSprite(Reg.TITLE_BG2);
+		dark_bg2 = new FlxSprite(0,0,Reg.TITLE_BG2);
 		dark_bg2.x = dark_bg.x + dark_bg.width;
 		dark_bg2.velocity.x = -speed/2;
 
 
-		title = new FlxSprite(Reg.TITLE_TEXT);
-		subtitle = new FlxSprite(Reg.TITLE_SUBTITLE);
+		title = new FlxSprite(0,0,Reg.TITLE_TEXT);
+		subtitle = new FlxSprite(0,0,Reg.TITLE_SUBTITLE);
 
 		title.setPosition(FlxG.width/2 - title.width/2, FlxG.height/2 - 60);
 		subtitle.setPosition(FlxG.width/2 - subtitle.width/2, FlxG.height/2 + 90);
@@ -72,7 +74,8 @@ class MenuState extends FlxState
 	{
 		super.update();
 
-		if(FlxG.keys.pressed.ANY){
+		if(!goingToNextLevel && FlxG.keys.pressed.ANY){
+			goingToNextLevel = true;
 			FlxG.camera.flash(FlxColor.WHITE,1,fadeToLevel);
 		}
 
