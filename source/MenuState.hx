@@ -75,6 +75,7 @@ class MenuState extends FlxState
 		super.update();
 
 		if(!goingToNextLevel && FlxG.keys.pressed.ANY){
+			Sounds.player_die();
 			goingToNextLevel = true;
 			FlxG.camera.flash(FlxColor.WHITE,1,fadeToLevel);
 		}

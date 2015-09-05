@@ -400,7 +400,7 @@ class Player extends Unit
 
     public function takeDamage():Void{
         FlxG.camera.shake(0.01, 0.1);
-        FlxG.camera.flash(FlxColor.WHITE, 0.5, turnOffSlowMo);
+        FlxG.camera.flash(0x88ffffff, 0.3, turnOffSlowMo);
 
         kill();
 
